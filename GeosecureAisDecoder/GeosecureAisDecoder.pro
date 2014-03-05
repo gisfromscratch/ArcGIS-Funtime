@@ -11,10 +11,13 @@ TEMPLATE = lib
 
 DEFINES += GEOSECUREAISDECODER_LIBRARY
 
-SOURCES += GeosecureAisDecoder.cpp
+SOURCES += GeosecureAisDecoder.cpp \
+    ais.cpp \
+    ais1_2_3.cpp
 
 HEADERS += GeosecureAisDecoder.h\
-        geosecureaisdecoder_global.h
+        geosecureaisdecoder_global.h \
+    ais.h
 
 unix {
     target.path = /usr/lib
