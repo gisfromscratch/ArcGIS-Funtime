@@ -18,6 +18,8 @@ namespace EsriRuntimeQt
 class MapGraphicsView;
 }
 
+#include <AisReader.h>
+
 #include "Map.h"
 
 //Uncommented layer(s) needed
@@ -38,7 +40,8 @@ public:
     GeosecureAisViewer (QWidget *parent = 0);
     ~GeosecureAisViewer ();
 
-public slots:
+private slots:
+    void addAisMessage(AisMessage *aisMessage);
     //  void onMapReady();
     //  void onLocalServiceCreationSuccess(const QString& url, const QString& name);
     //  void onLocalServiceCreationFailure(const QString& name);
@@ -57,6 +60,8 @@ private:
     //  EsriRuntimeQt::ArcGISFeatureLayer m_localFeatureLayer;
     //  EsriRuntimeQt::GraphicsLayer m_graphicsLayer;
     //  EsriRuntimeQt::ArcGISFeatureLayer m_featureLayer;
+
+    AisReader *_aisReader;
 };
 
 #endif // GEOSECUREAISVIEWER_H

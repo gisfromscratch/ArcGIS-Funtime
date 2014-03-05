@@ -33,3 +33,10 @@ SOURCES += \
 HEADERS += \
 	GeosecureAisViewer.h
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Debug/release/ -lGeosecureAisDecoder
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Debug/debug/ -lGeosecureAisDecoder
+else:unix: LIBS += -L$$PWD/../Debug/ -lGeosecureAisDecoder
+
+INCLUDEPATH += $$PWD/../GeosecureAisDecoder
+DEPENDPATH += $$PWD/../GeosecureAisDecoder

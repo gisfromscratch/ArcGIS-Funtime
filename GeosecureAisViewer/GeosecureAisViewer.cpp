@@ -12,8 +12,10 @@
 
 #include "GeosecureAisViewer.h"
 
-#include "MapGraphicsView.h"
-#include "ArcGISRuntime.h"
+#include <ArcGISRuntime.h>
+#include <MapGraphicsView.h>
+
+#include <QDebug>
 
 // Uncomment if needed
 //#include "Graphic.h"
@@ -21,8 +23,9 @@
 //#include "Point.h"
 //#include "ServiceInfoTask.h"
 
-GeosecureAisViewer::GeosecureAisViewer(QWidget *parent)
-    : QMainWindow(parent)
+GeosecureAisViewer::GeosecureAisViewer(QWidget *parent) :
+    QMainWindow(parent),
+    _aisReader(new AisReader(this))
 {
     // set to openGL rendering
     EsriRuntimeQt::ArcGISRuntime::setRenderEngine(EsriRuntimeQt::RenderEngine::OpenGL);
@@ -38,6 +41,10 @@ GeosecureAisViewer::GeosecureAisViewer(QWidget *parent)
     path.append("/sdk/samples/data");
     QDir dataDir(path); // using QDir to convert to correct file separator
     QString pathSampleData = dataDir.path() + QDir::separator();
+
+    QString aisFilePath = "nmea-sample";
+    connect(_aisReader, SIGNAL(aisMessageVisited(AisMessage*)), this, SLOT(addAisMessage(AisMessage*)));
+    _aisReader->readFileAsync(aisFilePath);
 
     //// ArcGIS Online Tiled Basemap Layer
     //m_tiledServiceLayer = EsriRuntimeQt::ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer");
@@ -113,6 +120,8 @@ GeosecureAisViewer::GeosecureAisViewer(QWidget *parent)
 
 GeosecureAisViewer::~GeosecureAisViewer()
 {
+    disconnect(_aisReader, SIGNAL(aisMessageVisited(AisMessage*)), this, SLOT(addAisMessage(AisMessage*)));
+
     // stop the Local Map Service
     /*
   if(m_localMapService.status() == EsriRuntimeQt::LocalServiceStatus::Running)
@@ -206,3 +215,8 @@ void GeosecureAisViewer::onFeatureServiceCreationFailure(const QString& name)
 }
 */
 
+void GeosecureAisViewer::addAisMessage(AisMessage *aisMessage)
+{
+//    qDebug() << aisMessage->mmsi() << " received";
+    delete aisMessage;
+}

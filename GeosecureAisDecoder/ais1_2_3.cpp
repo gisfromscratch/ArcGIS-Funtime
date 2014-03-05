@@ -11,7 +11,12 @@ Ais1_2_3::Ais1_2_3(const char *nmea_payload, const size_t pad)
   if (status != AIS_UNINITIALIZED)
     return;
 
-  assert(message_id >= 1 && message_id <= 3);
+  // TODO: Remove this hack
+  //assert(message_id >= 1 && message_id <= 3);
+  if (message_id < 1 || 3 < message_id)
+  {
+      throw std::logic_error("Wrong message ID");
+  }
 
   if (pad != 0 || strlen(nmea_payload) != 28) {
     status = AIS_ERR_BAD_BIT_COUNT;
