@@ -1,8 +1,0 @@
-*.o
-[0-9]*
-build
-*.dSYM
-*.pyc
-nohup.out
-foo*
-test_libais
