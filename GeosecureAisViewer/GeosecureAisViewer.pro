@@ -36,9 +36,9 @@ HEADERS += \
     AisGraphicFactory.h
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Release/release/ -lGeosecureAisDecoder
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Debug/debug/ -lGeosecureAisDecoder
-else:unix: LIBS += -L$$PWD/../Debug/ -lGeosecureAisDecoder
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Release/release/ -lGeosecureAisDecoder -lGeosecureCommons
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Debug/debug/ -lGeosecureAisDecoder -lGeosecureCommons
+else:unix: LIBS += -L$$PWD/../Debug/ -lGeosecureAisDecoder -lGeosecureCommons
 
-INCLUDEPATH += $$PWD/../GeosecureAisDecoder
-DEPENDPATH += $$PWD/../GeosecureAisDecoder
+INCLUDEPATH += $$PWD/../GeosecureAisDecoder $$PWD/../GeosecureCommons
+DEPENDPATH += $$PWD/../GeosecureAisDecoder $$PWD/../GeosecureCommons

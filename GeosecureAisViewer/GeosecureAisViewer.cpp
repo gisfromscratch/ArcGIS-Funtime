@@ -26,7 +26,8 @@
 
 GeosecureAisViewer::GeosecureAisViewer(QWidget *parent) :
     QMainWindow(parent),
-    _aisReader(new AisReader)
+    _aisReader(new AisReader(this)),
+    _aisGraphicFactory(nullptr)
 {
     // set to openGL rendering
     EsriRuntimeQt::ArcGISRuntime::setRenderEngine(EsriRuntimeQt::RenderEngine::OpenGL);
@@ -121,10 +122,17 @@ GeosecureAisViewer::GeosecureAisViewer(QWidget *parent) :
 
 GeosecureAisViewer::~GeosecureAisViewer()
 {
+    // Disconnect signals for the AIS Reader
 //    disconnect(_aisReader, SIGNAL(aisMessageVisited(AisMessage*)), this, SLOT(addAisMessage(AisMessage*)));
     disconnect(_aisReader, SIGNAL(aisMessagesVisited(QList<AisMessage*>*)), this, SLOT(addAisMessages(QList<AisMessage*>*)));
     _aisReader->cancelRead();
-    _aisReader->deleteLater();
+
+    // Disconnect signals for the AIS graphic factory
+    if (nullptr != _aisGraphicFactory)
+    {
+        disconnect(_aisGraphicFactory, SIGNAL(graphicsCreated(QList<AisMessage*>*,QList<EsriRuntimeQt::Graphic>*)), this, SLOT(addAisGraphics(QList<AisMessage*>*,QList<EsriRuntimeQt::Graphic>*)));
+        _aisGraphicFactory->cancelCreate();
+    }
 
     // stop the Local Map Service
     /*
@@ -164,8 +172,9 @@ void GeosecureAisViewer::mapReady()
     // Add the AIS graphics layer
     m_map.addLayer(_aisLayer);
 
-    // Create the graphic factory
+    // Create the AIS graphic factory
     _aisGraphicFactory = new AisGraphicFactory(m_map.spatialReference(), this);
+    connect(_aisGraphicFactory, SIGNAL(graphicsCreated(QList<AisMessage*>*,QList<EsriRuntimeQt::Graphic>*)), this, SLOT(addAisGraphics(QList<AisMessage*>*,QList<EsriRuntimeQt::Graphic>*)));
 
     // Read the AIS file
     QString aisFilePath = "nmea-sample";
@@ -239,6 +248,19 @@ void GeosecureAisViewer::addAisMessage(AisMessage *aisMessage)
 
 void GeosecureAisViewer::addAisMessages(QList<AisMessage*> *aisMessages)
 {
-    // Add AIS messages as graphics
+    // Create AIS messages as graphics
     _aisGraphicFactory->createGraphicsAsync(aisMessages);
+}
+
+void GeosecureAisViewer::addAisGraphics(QList<AisMessage*> *aisMessages, QList<EsriRuntimeQt::Graphic> *aisGraphics)
+{
+    qDebug() << "Adding AIS graphics";
+
+    // Add AIS Messages as graphics
+    QList<int> graphicIds = _aisLayer.addGraphics(*aisGraphics);
+    if (!graphicIds.isEmpty())
+    {
+        auto aisGraphic = _aisLayer.graphic(graphicIds.at(0));
+        qDebug() << ((EsriRuntimeQt::Point*)&aisGraphic.geometry())->x();
+    }
 }

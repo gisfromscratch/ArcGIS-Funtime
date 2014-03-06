@@ -1,23 +1,33 @@
 #include "AisGraphicFactory.h"
 
-#include <GeometryEngine.h>
-
+#include <QDebug>
 #include <QVariant>
 
 #include <QtConcurrent/QtConcurrent>
 
 const EsriRuntimeQt::SpatialReference AisGraphicFactory::WGS84 = EsriRuntimeQt::SpatialReference(4326);
-const EsriRuntimeQt::SimpleMarkerSymbol AisGraphicFactory::DefaultMarkerSymbol = EsriRuntimeQt::SimpleMarkerSymbol(Qt::green, AisGraphicFactory::DefaultSymbolSize);
+const EsriRuntimeQt::SimpleMarkerSymbol AisGraphicFactory::DefaultMarkerSymbol = EsriRuntimeQt::SimpleMarkerSymbol(Qt::black, AisGraphicFactory::DefaultSymbolSize);
 QMap<AisGraphicFactory::AttributeIndex, QString> AisGraphicFactory::AttributeNames;
 
 AisGraphicFactory::AisGraphicFactory(const EsriRuntimeQt::SpatialReference &spatialReference, QObject *parent) :
     QObject(parent),
-    _targetSpatialReference(spatialReference)
+    _targetSpatialReference(spatialReference),
+    _projectionEngine(new SimpleProjectionEngine)
 {
     if (AttributeNames.isEmpty())
     {
         AttributeNames[MMSIAttributeIndex] = "MMSI";
     }
+}
+
+AisGraphicFactory::~AisGraphicFactory()
+{
+    delete _projectionEngine;
+}
+
+void AisGraphicFactory::cancelCreate()
+{
+    _cancel.store(1);
 }
 
 EsriRuntimeQt::Graphic AisGraphicFactory::createGraphic(AisMessage *aisMessage)
@@ -26,7 +36,7 @@ EsriRuntimeQt::Graphic AisGraphicFactory::createGraphic(AisMessage *aisMessage)
     if (!_targetSpatialReference.isWGS84())
     {
         // Project coordinates
-        location = EsriRuntimeQt::GeometryEngine::project(location, WGS84, _targetSpatialReference);
+        location = _projectionEngine->project(location, WGS84, _targetSpatialReference);
     }
 
     // AIS attributes
@@ -39,17 +49,31 @@ EsriRuntimeQt::Graphic AisGraphicFactory::createGraphic(AisMessage *aisMessage)
 
 void AisGraphicFactory::createGraphicsAsync(QList<AisMessage*> *aisMessages)
 {
+    _cancel.store(0);
     QtConcurrent::run(this, &AisGraphicFactory::createGraphics, aisMessages);
 }
 
-QList<EsriRuntimeQt::Graphic*> *AisGraphicFactory::createGraphics(QList<AisMessage*> *aisMessages)
+QList<EsriRuntimeQt::Graphic> *AisGraphicFactory::createGraphics(QList<AisMessage*> *aisMessages)
 {
-    auto aisGraphics = new QList<EsriRuntimeQt::Graphic*>();
+    qDebug() << "Trying to create" << aisMessages->size() << "AIS graphics";
+
+    auto aisGraphics = new QList<EsriRuntimeQt::Graphic>();
+    aisGraphics->reserve(aisMessages->size());
     foreach(AisMessage *aisMessage, *aisMessages)
     {
-        auto aisGraphic = new EsriRuntimeQt::Graphic(createGraphic(aisMessage));
-        aisGraphics->append(aisGraphic);
+        if (_cancel.load())
+        {
+            return aisGraphics;
+        }
+
+        EsriRuntimeQt::Graphic aisGraphic = createGraphic(aisMessage);
+        if (!aisGraphic.geometry().isEmpty())
+        {
+            aisGraphics->append(aisGraphic);
+        }
     }
-    emit graphicsCreated(aisGraphics);
+
+    qDebug() << aisGraphics->size() << "AIS graphics created";
+    emit graphicsCreated(aisMessages, aisGraphics);
     return aisGraphics;
 }

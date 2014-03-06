@@ -45,6 +45,7 @@ public:
 private slots:
     void addAisMessage(AisMessage *aisMessage);
     void addAisMessages(QList<AisMessage*> *aisMessage);
+    void addAisGraphics(QList<AisMessage*> *aisMessages, QList<EsriRuntimeQt::Graphic> *aisGraphics);
     void mapReady();
     //  void onLocalServiceCreationSuccess(const QString& url, const QString& name);
     //  void onLocalServiceCreationFailure(const QString& name);
