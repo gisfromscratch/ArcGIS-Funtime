@@ -13,6 +13,7 @@
 #include "GeosecureAisViewer.h"
 
 #include <ArcGISRuntime.h>
+#include <Graphic.h>
 #include <MapGraphicsView.h>
 
 #include <QDebug>
@@ -25,7 +26,7 @@
 
 GeosecureAisViewer::GeosecureAisViewer(QWidget *parent) :
     QMainWindow(parent),
-    _aisReader(new AisReader(this))
+    _aisReader(new AisReader)
 {
     // set to openGL rendering
     EsriRuntimeQt::ArcGISRuntime::setRenderEngine(EsriRuntimeQt::RenderEngine::OpenGL);
@@ -37,14 +38,14 @@ GeosecureAisViewer::GeosecureAisViewer(QWidget *parent) :
     // show Esri logo by default
     m_map.setEsriLogoVisible(true);
 
+    // Add local tile cache
+    _basemapLayer = EsriRuntimeQt::ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer");
+    m_map.addLayer(_basemapLayer);
+
     QString path = EsriRuntimeQt::ArcGISRuntime::installDirectory();
     path.append("/sdk/samples/data");
     QDir dataDir(path); // using QDir to convert to correct file separator
     QString pathSampleData = dataDir.path() + QDir::separator();
-
-    QString aisFilePath = "nmea-sample";
-    connect(_aisReader, SIGNAL(aisMessageVisited(AisMessage*)), this, SLOT(addAisMessage(AisMessage*)));
-    _aisReader->readFileAsync(aisFilePath);
 
     //// ArcGIS Online Tiled Basemap Layer
     //m_tiledServiceLayer = EsriRuntimeQt::ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer");
@@ -114,13 +115,16 @@ GeosecureAisViewer::GeosecureAisViewer(QWidget *parent) :
   }
   */
 
-    //// connect to signal that is emitted when the map is ready
-    // connect(&m_map, SIGNAL(mapReady()), this, SLOT(onMapReady()));
+    // connect to signal that is emitted when the map is ready
+    connect(&m_map, SIGNAL(mapReady()), this, SLOT(mapReady()));
 }
 
 GeosecureAisViewer::~GeosecureAisViewer()
 {
-    disconnect(_aisReader, SIGNAL(aisMessageVisited(AisMessage*)), this, SLOT(addAisMessage(AisMessage*)));
+//    disconnect(_aisReader, SIGNAL(aisMessageVisited(AisMessage*)), this, SLOT(addAisMessage(AisMessage*)));
+    disconnect(_aisReader, SIGNAL(aisMessagesVisited(QList<AisMessage*>*)), this, SLOT(addAisMessages(QList<AisMessage*>*)));
+    _aisReader->cancelRead();
+    _aisReader->deleteLater();
 
     // stop the Local Map Service
     /*
@@ -149,19 +153,27 @@ GeosecureAisViewer::~GeosecureAisViewer()
     //disconnect(&m_localFeatureService, SIGNAL(serviceCreationFailure(const QString&)), this, SLOT(onFeatureServiceCreationFailure(const QString&)));
 
     // disconnect signal for Map
-    //disconnect(&m_map, SIGNAL(mapReady()), this, SLOT(onMapReady()));
+    disconnect(&m_map, SIGNAL(mapReady()), this, SLOT(mapReady()));
 
     m_map.dispose();
     delete m_mapGraphicsView;
 }
 
-/*
-void GeosecureAisViewer::onMapReady()
+void GeosecureAisViewer::mapReady()
 {
-  // set the map extent
-  m_map.setExtent(EsriRuntimeQt::Envelope(xmin, ymin, xmax, ymax));
+    // Add the AIS graphics layer
+    m_map.addLayer(_aisLayer);
+
+    // Create the graphic factory
+    _aisGraphicFactory = new AisGraphicFactory(m_map.spatialReference(), this);
+
+    // Read the AIS file
+    QString aisFilePath = "nmea-sample";
+//    connect(_aisReader, SIGNAL(aisMessageVisited(AisMessage*)), this, SLOT(addAisMessage(AisMessage*)));
+    connect(_aisReader, SIGNAL(aisMessagesVisited(QList<AisMessage*>*)), this, SLOT(addAisMessages(QList<AisMessage*>*)));
+    _aisReader->readFileAsync(aisFilePath);
 }
-*/
+
 
 /*
 void GeosecureAisViewer::onLocalServiceCreationSuccess(const QString& url, const QString& name)
@@ -218,5 +230,15 @@ void GeosecureAisViewer::onFeatureServiceCreationFailure(const QString& name)
 void GeosecureAisViewer::addAisMessage(AisMessage *aisMessage)
 {
 //    qDebug() << aisMessage->mmsi() << " received";
+
+    // Add AIS message as a graphic
+    EsriRuntimeQt::Graphic aisGraphic = _aisGraphicFactory->createGraphic(aisMessage);
+    _aisLayer.addGraphic(aisGraphic);
     delete aisMessage;
+}
+
+void GeosecureAisViewer::addAisMessages(QList<AisMessage*> *aisMessages)
+{
+    // Add AIS messages as graphics
+    _aisGraphicFactory->createGraphicsAsync(aisMessages);
 }

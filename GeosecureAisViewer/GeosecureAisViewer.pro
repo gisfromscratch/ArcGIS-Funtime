@@ -28,13 +28,15 @@ win32:CONFIG += \
 
 SOURCES += \
 	main.cpp \
-        GeosecureAisViewer.cpp 
+        GeosecureAisViewer.cpp \ 
+    AisGraphicFactory.cpp
 
 HEADERS += \
-	GeosecureAisViewer.h
+	GeosecureAisViewer.h \
+    AisGraphicFactory.h
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Debug/release/ -lGeosecureAisDecoder
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Release/release/ -lGeosecureAisDecoder
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Debug/debug/ -lGeosecureAisDecoder
 else:unix: LIBS += -L$$PWD/../Debug/ -lGeosecureAisDecoder
 

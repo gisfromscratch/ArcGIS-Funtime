@@ -7,13 +7,13 @@
 
 AisReader::AisReader(QObject *parent) :
     QObject(parent),
-    _decoder(new GeosecureAisDecoder)
+    _decoder(new GeosecureAisDecoder),
+    AisNmeaTokenSeparator(",")
 {
 }
 
 AisReader::~AisReader()
 {
-    _cancel.store(1);
     _decoder->deleteLater();
 }
 
@@ -27,8 +27,15 @@ bool AisReader::readFileAsync(const QString &filePath)
     aisFile.close();
 
     // Call asynchronously
+    _cancel.store(0);
     QtConcurrent::run(this, &AisReader::readFile, filePath);
     return true;
+}
+
+void AisReader::cancelRead()
+{
+    // Set the cancel flag
+    _cancel.store(1);
 }
 
 void AisReader::readFile(const QString &filePath)
@@ -36,11 +43,12 @@ void AisReader::readFile(const QString &filePath)
     QFile aisFile(filePath);
     if (aisFile.open(QIODevice::ReadOnly))
     {
+        auto messages = new QList<AisMessage*>();
         QTextStream aisStream(&aisFile);
-        while (!aisStream.atEnd())
+        while (!aisStream.atEnd() && !_cancel.load())
         {
             QString aisLine = aisStream.readLine();
-            QStringList aisTokens = aisLine.split(",");
+            QStringList aisTokens = aisLine.split(AisNmeaTokenSeparator);
             switch (aisTokens.length())
             {
                 case AisNmeaTokenCount:
@@ -51,10 +59,11 @@ void AisReader::readFile(const QString &filePath)
                     {
                         if (_cancel.load())
                         {
-                            // Destructor of AisFileReader was called!
-                            return;
+                            // Cancel read was called!
+                            break;
                         }
                         aisMessage = _decoder->createAisMessage(aisNmeaToken.toStdString().c_str());
+                        messages->append(aisMessage);
                         emit aisMessageVisited(aisMessage);
                     }
                     catch (std::logic_error &err)
@@ -66,5 +75,6 @@ void AisReader::readFile(const QString &filePath)
             }
         }
         aisFile.close();
+        emit aisMessagesVisited(messages);
     }
 }
