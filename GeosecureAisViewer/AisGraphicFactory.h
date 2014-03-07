@@ -7,6 +7,7 @@
 #include <SimpleProjectionEngine.h>
 
 #include <Graphic.h>
+#include <PictureMarkerSymbol.h>
 #include <SimpleMarkerSymbol.h>
 #include <SpatialReference.h>
 
@@ -34,33 +35,33 @@ public:
      * \param aisMessage    The AIS message
      * \return              A new graphic instance.
      */
-    EsriRuntimeQt::Graphic createGraphic(AisMessage *aisMessage);
+    EsriRuntimeQt::Graphic createGraphic(const AisMessage &aisMessage);
 
     /*!
      * \brief createGraphicsAsync   Creates graphics asynchronously using the AIS messages.
      * \param aisMessages           The AIS messages
      */
-    void createGraphicsAsync(QList<AisMessage*> *aisMessages);
+    void createGraphicsAsync(QList<AisMessage> *aisMessages);
 
     /*!
-     * \brief createGraphics    Creates graphics using the AIS messages.
+     * \brief emitGraphics      Creates graphics using the AIS messages.
      * \param aisMessages       The AIS messages
      */
-    QList<EsriRuntimeQt::Graphic> *createGraphics(QList<AisMessage*> *aisMessages);
+    void emitGraphics(QList<AisMessage> *aisMessages);
 
 signals:
     /*!
      * \brief graphicsCreated   Signals that the AIS messages were created.
-     * \param aisMessages       The AIS messages
      * \param aisGraphics       The created AIS graphic instances
      */
-    void graphicsCreated(QList<AisMessage*> *aisMessages, QList<EsriRuntimeQt::Graphic> *aisGraphics);
+    void graphicsCreated(QList<EsriRuntimeQt::Graphic> *aisGraphics);
 
 public slots:
 
 private:
     static const EsriRuntimeQt::SpatialReference WGS84;
     static const EsriRuntimeQt::SimpleMarkerSymbol DefaultMarkerSymbol;
+    static EsriRuntimeQt::PictureMarkerSymbol ShipMarkerSymbol;
 
     enum SymbolSize { DefaultSymbolSize = 5 };
 

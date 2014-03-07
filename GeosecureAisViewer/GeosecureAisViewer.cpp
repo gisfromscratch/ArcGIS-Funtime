@@ -27,7 +27,8 @@
 GeosecureAisViewer::GeosecureAisViewer(QWidget *parent) :
     QMainWindow(parent),
     _aisReader(new AisReader(this)),
-    _aisGraphicFactory(nullptr)
+    _aisGraphicFactory(nullptr),
+    _graphicSerializer(new GraphicSerializer(this))
 {
     // set to openGL rendering
     EsriRuntimeQt::ArcGISRuntime::setRenderEngine(EsriRuntimeQt::RenderEngine::OpenGL);
@@ -43,10 +44,10 @@ GeosecureAisViewer::GeosecureAisViewer(QWidget *parent) :
     _basemapLayer = EsriRuntimeQt::ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer");
     m_map.addLayer(_basemapLayer);
 
-    QString path = EsriRuntimeQt::ArcGISRuntime::installDirectory();
-    path.append("/sdk/samples/data");
-    QDir dataDir(path); // using QDir to convert to correct file separator
-    QString pathSampleData = dataDir.path() + QDir::separator();
+//    QString path = EsriRuntimeQt::ArcGISRuntime::installDirectory();
+//    path.append("/sdk/samples/data");
+//    QDir dataDir(path); // using QDir to convert to correct file separator
+//    QString pathSampleData = dataDir.path() + QDir::separator();
 
     //// ArcGIS Online Tiled Basemap Layer
     //m_tiledServiceLayer = EsriRuntimeQt::ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer");
@@ -123,16 +124,20 @@ GeosecureAisViewer::GeosecureAisViewer(QWidget *parent) :
 GeosecureAisViewer::~GeosecureAisViewer()
 {
     // Disconnect signals for the AIS Reader
-//    disconnect(_aisReader, SIGNAL(aisMessageVisited(AisMessage*)), this, SLOT(addAisMessage(AisMessage*)));
-    disconnect(_aisReader, SIGNAL(aisMessagesVisited(QList<AisMessage*>*)), this, SLOT(addAisMessages(QList<AisMessage*>*)));
+//    disconnect(_aisReader, SIGNAL(aisMessageVisited(AisMessage)), this, SLOT(addAisMessage(AisMessage)));
+    disconnect(_aisReader, SIGNAL(aisMessagesVisited(QList<AisMessage>*)), this, SLOT(addAisMessages(QList<AisMessage>*)));
     _aisReader->cancelRead();
 
     // Disconnect signals for the AIS graphic factory
     if (nullptr != _aisGraphicFactory)
     {
-        disconnect(_aisGraphicFactory, SIGNAL(graphicsCreated(QList<AisMessage*>*,QList<EsriRuntimeQt::Graphic>*)), this, SLOT(addAisGraphics(QList<AisMessage*>*,QList<EsriRuntimeQt::Graphic>*)));
+        disconnect(_aisGraphicFactory, SIGNAL(graphicsCreated(QList<EsriRuntimeQt::Graphic>*)), this, SLOT(addAisGraphics(QList<EsriRuntimeQt::Graphic>*)));
         _aisGraphicFactory->cancelCreate();
     }
+
+    // Disconnect signals for the graphic serializer
+    disconnect(_graphicSerializer, SIGNAL(graphicsSerialized(QString)), this, SLOT(graphicsExported(QString)));
+    _graphicSerializer->cancelSerialize();
 
     // stop the Local Map Service
     /*
@@ -174,13 +179,16 @@ void GeosecureAisViewer::mapReady()
 
     // Create the AIS graphic factory
     _aisGraphicFactory = new AisGraphicFactory(m_map.spatialReference(), this);
-    connect(_aisGraphicFactory, SIGNAL(graphicsCreated(QList<AisMessage*>*,QList<EsriRuntimeQt::Graphic>*)), this, SLOT(addAisGraphics(QList<AisMessage*>*,QList<EsriRuntimeQt::Graphic>*)));
+    connect(_aisGraphicFactory, SIGNAL(graphicsCreated(QList<EsriRuntimeQt::Graphic>*)), this, SLOT(addAisGraphics(QList<EsriRuntimeQt::Graphic>*)));
 
     // Read the AIS file
     QString aisFilePath = "nmea-sample";
-//    connect(_aisReader, SIGNAL(aisMessageVisited(AisMessage*)), this, SLOT(addAisMessage(AisMessage*)));
-    connect(_aisReader, SIGNAL(aisMessagesVisited(QList<AisMessage*>*)), this, SLOT(addAisMessages(QList<AisMessage*>*)));
+//    connect(_aisReader, SIGNAL(aisMessageVisited(AisMessage)), this, SLOT(addAisMessage(AisMessage)));
+    connect(_aisReader, SIGNAL(aisMessagesVisited(QList<AisMessage>*)), this, SLOT(addAisMessages(QList<AisMessage>*)));
     _aisReader->readFileAsync(aisFilePath);
+
+    // Connect to the serialization signals
+    connect(_graphicSerializer, SIGNAL(graphicsSerialized(QString)), this, SLOT(graphicsExported(QString)));
 }
 
 
@@ -236,31 +244,31 @@ void GeosecureAisViewer::onFeatureServiceCreationFailure(const QString& name)
 }
 */
 
-void GeosecureAisViewer::addAisMessage(AisMessage *aisMessage)
+void GeosecureAisViewer::addAisMessage(AisMessage aisMessage)
 {
-//    qDebug() << aisMessage->mmsi() << " received";
-
     // Add AIS message as a graphic
     EsriRuntimeQt::Graphic aisGraphic = _aisGraphicFactory->createGraphic(aisMessage);
     _aisLayer.addGraphic(aisGraphic);
-    delete aisMessage;
 }
 
-void GeosecureAisViewer::addAisMessages(QList<AisMessage*> *aisMessages)
+void GeosecureAisViewer::addAisMessages(QList<AisMessage> *aisMessages)
 {
     // Create AIS messages as graphics
     _aisGraphicFactory->createGraphicsAsync(aisMessages);
 }
 
-void GeosecureAisViewer::addAisGraphics(QList<AisMessage*> *aisMessages, QList<EsriRuntimeQt::Graphic> *aisGraphics)
+void GeosecureAisViewer::addAisGraphics(QList<EsriRuntimeQt::Graphic> *aisGraphics)
 {
     qDebug() << "Adding AIS graphics";
 
     // Add AIS Messages as graphics
-    QList<int> graphicIds = _aisLayer.addGraphics(*aisGraphics);
-    if (!graphicIds.isEmpty())
-    {
-        auto aisGraphic = _aisLayer.graphic(graphicIds.at(0));
-        qDebug() << ((EsriRuntimeQt::Point*)&aisGraphic.geometry())->x();
-    }
+    _aisLayer.addGraphics(*aisGraphics);
+
+    // Export the graphics
+    _graphicSerializer->serializeGraphicsAsync(aisGraphics, "AIS.json");
+}
+
+void GeosecureAisViewer::graphicsExported(QString filePath)
+{
+    qDebug() << "Graphics were exported to" << filePath;
 }

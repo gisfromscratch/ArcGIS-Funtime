@@ -9,10 +9,12 @@ GeosecureAisDecoder::GeosecureAisDecoder(QObject *parent) :
     BuildNmeaLookup();
 }
 
-AisMessage *GeosecureAisDecoder::createAisMessage(const char *nmea_payload, const size_t padding)
+AisMessage GeosecureAisDecoder::createAisMessage(const char *nmea_payload, const size_t padding)
 {
     Ais1_2_3 simpleAisMessage(nmea_payload, padding);
     int mmsi = simpleAisMessage.mmsi;
     EsriRuntimeQt::Point location(simpleAisMessage.x, simpleAisMessage.y);
-    return new AisMessage(mmsi, location, nullptr);
+    auto aisMessage = AisMessage(mmsi, location);
+    aisMessage.setRotation(simpleAisMessage.rot);
+    return aisMessage;
 }

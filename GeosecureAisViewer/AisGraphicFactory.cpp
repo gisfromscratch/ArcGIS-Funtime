@@ -1,12 +1,14 @@
 #include "AisGraphicFactory.h"
 
 #include <QDebug>
+#include <QPixmap>
 #include <QVariant>
 
 #include <QtConcurrent/QtConcurrent>
 
 const EsriRuntimeQt::SpatialReference AisGraphicFactory::WGS84 = EsriRuntimeQt::SpatialReference(4326);
 const EsriRuntimeQt::SimpleMarkerSymbol AisGraphicFactory::DefaultMarkerSymbol = EsriRuntimeQt::SimpleMarkerSymbol(Qt::black, AisGraphicFactory::DefaultSymbolSize);
+EsriRuntimeQt::PictureMarkerSymbol AisGraphicFactory::ShipMarkerSymbol = EsriRuntimeQt::PictureMarkerSymbol();
 QMap<AisGraphicFactory::AttributeIndex, QString> AisGraphicFactory::AttributeNames;
 
 AisGraphicFactory::AisGraphicFactory(const EsriRuntimeQt::SpatialReference &spatialReference, QObject *parent) :
@@ -17,6 +19,9 @@ AisGraphicFactory::AisGraphicFactory(const EsriRuntimeQt::SpatialReference &spat
     if (AttributeNames.isEmpty())
     {
         AttributeNames[MMSIAttributeIndex] = "MMSI";
+
+        // QPixmap needs constructed QGuiApplication!
+        ShipMarkerSymbol.setImage(QPixmap(":/symbols/Icons/symbols/ship.png").toImage());
     }
 }
 
@@ -30,9 +35,9 @@ void AisGraphicFactory::cancelCreate()
     _cancel.store(1);
 }
 
-EsriRuntimeQt::Graphic AisGraphicFactory::createGraphic(AisMessage *aisMessage)
+EsriRuntimeQt::Graphic AisGraphicFactory::createGraphic(const AisMessage &aisMessage)
 {
-    auto location = aisMessage->location();
+    auto location = aisMessage.location();
     if (!_targetSpatialReference.isWGS84())
     {
         // Project coordinates
@@ -41,29 +46,33 @@ EsriRuntimeQt::Graphic AisGraphicFactory::createGraphic(AisMessage *aisMessage)
 
     // AIS attributes
     QVariantMap attributes;
-    attributes[AttributeNames[MMSIAttributeIndex]] = QVariant(aisMessage->mmsi());
+    attributes[AttributeNames[MMSIAttributeIndex]] = QVariant(aisMessage.mmsi());
 
-    auto aisGraphic = EsriRuntimeQt::Graphic(location, DefaultMarkerSymbol, attributes);
+    auto shipMarkerSymbol = EsriRuntimeQt::PictureMarkerSymbol(ShipMarkerSymbol);
+    shipMarkerSymbol.setAngle(aisMessage.rotation());
+    auto aisGraphic = EsriRuntimeQt::Graphic(location, shipMarkerSymbol, attributes);
     return aisGraphic;
 }
 
-void AisGraphicFactory::createGraphicsAsync(QList<AisMessage*> *aisMessages)
+void AisGraphicFactory::createGraphicsAsync(QList<AisMessage> *aisMessages)
 {
     _cancel.store(0);
-    QtConcurrent::run(this, &AisGraphicFactory::createGraphics, aisMessages);
+    QtConcurrent::run(this, &AisGraphicFactory::emitGraphics, aisMessages);
 }
 
-QList<EsriRuntimeQt::Graphic> *AisGraphicFactory::createGraphics(QList<AisMessage*> *aisMessages)
+void AisGraphicFactory::emitGraphics(QList<AisMessage> *aisMessages)
 {
     qDebug() << "Trying to create" << aisMessages->size() << "AIS graphics";
 
     auto aisGraphics = new QList<EsriRuntimeQt::Graphic>();
     aisGraphics->reserve(aisMessages->size());
-    foreach(AisMessage *aisMessage, *aisMessages)
+    foreach(AisMessage aisMessage, *aisMessages)
     {
         if (_cancel.load())
         {
-            return aisGraphics;
+            delete aisMessages;
+            delete aisGraphics;
+            return;
         }
 
         EsriRuntimeQt::Graphic aisGraphic = createGraphic(aisMessage);
@@ -74,6 +83,7 @@ QList<EsriRuntimeQt::Graphic> *AisGraphicFactory::createGraphics(QList<AisMessag
     }
 
     qDebug() << aisGraphics->size() << "AIS graphics created";
-    emit graphicsCreated(aisMessages, aisGraphics);
-    return aisGraphics;
+    emit graphicsCreated(aisGraphics);
+
+    delete aisMessages;
 }

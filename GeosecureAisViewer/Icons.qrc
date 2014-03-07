@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/symbols">
+        <file>Icons/symbols/ship.png</file>
+    </qresource>
+</RCC>

@@ -42,3 +42,6 @@ else:unix: LIBS += -L$$PWD/../Debug/ -lGeosecureAisDecoder -lGeosecureCommons
 
 INCLUDEPATH += $$PWD/../GeosecureAisDecoder $$PWD/../GeosecureCommons
 DEPENDPATH += $$PWD/../GeosecureAisDecoder $$PWD/../GeosecureCommons
+
+RESOURCES += \
+    Icons.qrc

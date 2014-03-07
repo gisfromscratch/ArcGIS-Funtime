@@ -5,16 +5,13 @@
 
 #include <Point.h>
 
-#include <QObject>
-
 /*!
  * \brief Simple Ais message with location.
  */
-class GEOSECUREAISDECODERSHARED_EXPORT AisMessage : public QObject
+class GEOSECUREAISDECODERSHARED_EXPORT AisMessage
 {
-    Q_OBJECT
 public:
-    explicit AisMessage(const int mmsi, const EsriRuntimeQt::Point &location, QObject *parent = 0);
+    explicit AisMessage(const int mmsi, const EsriRuntimeQt::Point &location);
 
     /*!
      * \brief mmsi  The unique identifier.
@@ -23,18 +20,27 @@ public:
     int mmsi() const;
 
     /*!
-     * \brief location  WGS84 location of the Ais object.
+     * \brief location  WGS84 location of the Ais Vessel.
      * \return          WGS84 location
      */
     const EsriRuntimeQt::Point &location() const;
 
-signals:
+    /*!
+     * \brief rotation  The rotation of the AIS Vessel.
+     * \return          Approximated rotation of the AIS Vessel using deegree
+     */
+    float rotation() const;
 
-public slots:
+    /*!
+     * \brief setRotation   Sets the rotation of the AIS Vessel.
+     * \param rotation      The rotation using deegree.
+     */
+    void setRotation(float rotation);
 
 private:
     const int _mmsi;
     const EsriRuntimeQt::Point _location;
+    float _rotation;
 };
 
 #endif // AISMESSAGE_H

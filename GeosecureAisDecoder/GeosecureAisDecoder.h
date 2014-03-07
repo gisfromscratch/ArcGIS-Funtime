@@ -22,7 +22,7 @@ public:
      * \param padding               The padding for the NMEA message.
      * \return                      A new message instance.
      */
-    AisMessage *createAisMessage(const char *nmea_payload, const size_t padding = 0);
+    AisMessage createAisMessage(const char *nmea_payload, const size_t padding = 0);
 };
 
 #endif // GEOSECUREAISDECODER_H

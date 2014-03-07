@@ -43,7 +43,7 @@ void AisReader::readFile(const QString &filePath)
     QFile aisFile(filePath);
     if (aisFile.open(QIODevice::ReadOnly))
     {
-        auto messages = new QList<AisMessage*>();
+        auto messages = new QList<AisMessage>();
         QTextStream aisStream(&aisFile);
         while (!aisStream.atEnd() && !_cancel.load())
         {
@@ -54,7 +54,6 @@ void AisReader::readFile(const QString &filePath)
                 case AisNmeaTokenCount:
                 {
                     QString aisNmeaToken = aisTokens.at(AisNmeaTokenIndex);
-                    AisMessage *aisMessage;
                     try
                     {
                         if (_cancel.load())
@@ -62,7 +61,7 @@ void AisReader::readFile(const QString &filePath)
                             // Cancel read was called!
                             break;
                         }
-                        aisMessage = _decoder->createAisMessage(aisNmeaToken.toStdString().c_str());
+                        AisMessage aisMessage = _decoder->createAisMessage(aisNmeaToken.toStdString().c_str());
                         messages->append(aisMessage);
                         emit aisMessageVisited(aisMessage);
                     }

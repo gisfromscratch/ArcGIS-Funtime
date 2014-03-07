@@ -36,13 +36,13 @@ signals:
      * \brief aisMessageVisited Signals that a new AIS message was obtained.
      * \param message           The AIS message
      */
-    void aisMessageVisited(AisMessage *message);
+    void aisMessageVisited(AisMessage message);
 
     /*!
      * \brief aisMessagesVisited    Signals that all AIS messages were obtained.
      * \param messages              The AIS messages
      */
-    void aisMessagesVisited(QList<AisMessage*> *messages);
+    void aisMessagesVisited(QList<AisMessage> *messages);
 
 public slots:
 

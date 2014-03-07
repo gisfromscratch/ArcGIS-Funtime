@@ -16,13 +16,17 @@ CONFIG += c++11 esri_runtime_qt_10_2
 SOURCES += GeosecureCommons.cpp \
     ProjectionEngine.cpp \
     EsriProjectionEngine.cpp \
-    SimpleProjectionEngine.cpp
+    SimpleProjectionEngine.cpp \
+    GraphicSerializer.cpp \
+    TimeLayer.cpp
 
 HEADERS += GeosecureCommons.h\
         geosecurecommons_global.h \
     ProjectionEngine.h \
     EsriProjectionEngine.h \
-    SimpleProjectionEngine.h
+    SimpleProjectionEngine.h \
+    GraphicSerializer.h \
+    TimeLayer.h
 
 unix {
     target.path = /usr/lib

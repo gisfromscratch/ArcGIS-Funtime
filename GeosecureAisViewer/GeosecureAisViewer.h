@@ -21,11 +21,12 @@ class MapGraphicsView;
 #include "AisGraphicFactory.h"
 
 #include <AisReader.h>
+#include <GraphicSerializer.h>
 
 //Uncommented layer(s) needed
 //#include "ArcGISLocalTiledLayer.h"
 #include <ArcGISTiledMapServiceLayer.h>
-//#include "LocalMapService.h"
+//#include <LocalMapService.h>
 //#include "ArcGISDynamicMapServiceLayer.h"
 //#include "LocalFeatureService.h"
 //#include "ArcGISFeatureLayer.h"
@@ -43,12 +44,13 @@ public:
     ~GeosecureAisViewer ();
 
 private slots:
-    void addAisMessage(AisMessage *aisMessage);
-    void addAisMessages(QList<AisMessage*> *aisMessage);
-    void addAisGraphics(QList<AisMessage*> *aisMessages, QList<EsriRuntimeQt::Graphic> *aisGraphics);
+    void addAisMessage(AisMessage aisMessage);
+    void addAisMessages(QList<AisMessage> *aisMessage);
+    void addAisGraphics(QList<EsriRuntimeQt::Graphic> *aisGraphics);
+    void graphicsExported(QString filePath);
     void mapReady();
-    //  void onLocalServiceCreationSuccess(const QString& url, const QString& name);
-    //  void onLocalServiceCreationFailure(const QString& name);
+//    void localServiceCreationSuccess(const QString& url, const QString& name);
+//    void localServiceCreationFailure(const QString& name);
     //  void onFeatureServiceCreationSuccess(const QString& url, const QString& name);
     //  void onFeatureServiceCreationFailure(const QString& name);
 
@@ -58,7 +60,7 @@ private:
     //  EsriRuntimeQt::ArcGISLocalTiledLayer m_tiledLayer;
     //  EsriRuntimeQt::ArcGISTiledMapServiceLayer m_tiledServiceLayer;
     //  EsriRuntimeQt::ArcGISDynamicMapServiceLayer m_dynamicServiceLayer;
-    //  EsriRuntimeQt::LocalMapService m_localMapService;
+//    EsriRuntimeQt::LocalMapService m_localMapService;
     //  EsriRuntimeQt::ArcGISDynamicMapServiceLayer m_dynamicLocalServiceLayer;
     //  EsriRuntimeQt::LocalFeatureService m_localFeatureService;
     //  EsriRuntimeQt::ArcGISFeatureLayer m_localFeatureLayer;
@@ -69,6 +71,7 @@ private:
     EsriRuntimeQt::GraphicsLayer _aisLayer;
     AisReader *_aisReader;
     AisGraphicFactory *_aisGraphicFactory;
+    GraphicSerializer *_graphicSerializer;
 };
 
 #endif // GEOSECUREAISVIEWER_H
