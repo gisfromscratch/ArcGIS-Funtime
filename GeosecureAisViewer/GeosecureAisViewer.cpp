@@ -41,22 +41,22 @@ GeosecureAisViewer::GeosecureAisViewer(QWidget *parent) :
     m_map.setEsriLogoVisible(true);
 
     // Add local tile cache
-    _basemapLayer = EsriRuntimeQt::ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer");
-    m_map.addLayer(_basemapLayer);
+//    _basemapLayer = EsriRuntimeQt::ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer");
+//    m_map.addLayer(_basemapLayer);
 
-//    QString path = EsriRuntimeQt::ArcGISRuntime::installDirectory();
-//    path.append("/sdk/samples/data");
-//    QDir dataDir(path); // using QDir to convert to correct file separator
-//    QString pathSampleData = dataDir.path() + QDir::separator();
+    QString path = EsriRuntimeQt::ArcGISRuntime::installDirectory();
+    path.append("/sdk/samples/data");
+    QDir dataDir(path); // using QDir to convert to correct file separator
+    QString pathSampleData = dataDir.path() + QDir::separator();
 
     //// ArcGIS Online Tiled Basemap Layer
     //m_tiledServiceLayer = EsriRuntimeQt::ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer");
     //m_map.addLayer(m_tiledServiceLayer);
 
     //// Local Tiled Basemap Layer using: sdk/samples/data/tpks/Topographic.tpk
-    //QString tiledBaseMapLayer = pathSampleData + "tpks" + QDir::separator() + "Topographic.tpk";
-    //m_tiledLayer = EsriRuntimeQt::ArcGISLocalTiledLayer(tiledBaseMapLayer);
-    //m_map.addLayer(m_tiledLayer);
+    QString tiledBaseMapLayer = pathSampleData + "tpks" + QDir::separator() + "Topographic.tpk";
+    m_tiledLayer = EsriRuntimeQt::ArcGISLocalTiledLayer(tiledBaseMapLayer);
+    m_map.addLayer(m_tiledLayer);
 
     //// ArcGIS Online Dynamic Map Service Layer
     //m_dynamicServiceLayer = EsriRuntimeQt::ArcGISDynamicMapServiceLayer("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Specialty/ESRI_StateCityHighway_USA/MapServer");

@@ -24,7 +24,7 @@ class MapGraphicsView;
 #include <GraphicSerializer.h>
 
 //Uncommented layer(s) needed
-//#include "ArcGISLocalTiledLayer.h"
+#include <ArcGISLocalTiledLayer.h>
 #include <ArcGISTiledMapServiceLayer.h>
 //#include <LocalMapService.h>
 //#include "ArcGISDynamicMapServiceLayer.h"
@@ -57,8 +57,8 @@ private slots:
 private:
     EsriRuntimeQt::Map m_map;
     EsriRuntimeQt::MapGraphicsView* m_mapGraphicsView;
-    //  EsriRuntimeQt::ArcGISLocalTiledLayer m_tiledLayer;
-    //  EsriRuntimeQt::ArcGISTiledMapServiceLayer m_tiledServiceLayer;
+    EsriRuntimeQt::ArcGISLocalTiledLayer m_tiledLayer;
+//    EsriRuntimeQt::ArcGISTiledMapServiceLayer m_tiledServiceLayer;
     //  EsriRuntimeQt::ArcGISDynamicMapServiceLayer m_dynamicServiceLayer;
 //    EsriRuntimeQt::LocalMapService m_localMapService;
     //  EsriRuntimeQt::ArcGISDynamicMapServiceLayer m_dynamicLocalServiceLayer;
