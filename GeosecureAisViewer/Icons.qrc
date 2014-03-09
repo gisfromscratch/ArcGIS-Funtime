@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/symbols">
         <file>Icons/symbols/ship.png</file>
+        <file>Icons/toolbars/edit-select.png</file>
+        <file>Icons/toolbars/map.png</file>
     </qresource>
 </RCC>

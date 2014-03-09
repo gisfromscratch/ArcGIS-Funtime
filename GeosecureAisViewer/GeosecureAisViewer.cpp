@@ -28,7 +28,9 @@ GeosecureAisViewer::GeosecureAisViewer(QWidget *parent) :
     QMainWindow(parent),
     _aisReader(new AisReader(this)),
     _aisGraphicFactory(nullptr),
-    _graphicSerializer(new GraphicSerializer(this))
+    _graphicSerializer(new GraphicSerializer(this)),
+    _mappingToolbar(new MappingToolbar(&m_map, this)),
+    _statusView(new StatusView(this))
 {
     // set to openGL rendering
     EsriRuntimeQt::ArcGISRuntime::setRenderEngine(EsriRuntimeQt::RenderEngine::OpenGL);
@@ -57,6 +59,8 @@ GeosecureAisViewer::GeosecureAisViewer(QWidget *parent) :
     QString tiledBaseMapLayer = pathSampleData + "tpks" + QDir::separator() + "Topographic.tpk";
     m_tiledLayer = EsriRuntimeQt::ArcGISLocalTiledLayer(tiledBaseMapLayer);
     m_map.addLayer(m_tiledLayer);
+
+    _statusView->setStatusMessage(tr("Starting.."));
 
     //// ArcGIS Online Dynamic Map Service Layer
     //m_dynamicServiceLayer = EsriRuntimeQt::ArcGISDynamicMapServiceLayer("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Specialty/ESRI_StateCityHighway_USA/MapServer");
@@ -175,7 +179,11 @@ GeosecureAisViewer::~GeosecureAisViewer()
 void GeosecureAisViewer::mapReady()
 {
     // Add the AIS graphics layer
+    _aisLayer.setName("AIS Layer");
     m_map.addLayer(_aisLayer);
+
+    // Set the selectable layers
+    _mappingToolbar->setSelectableLayers(QList<EsriRuntimeQt::GraphicsLayer>() << _aisLayer);
 
     // Create the AIS graphic factory
     _aisGraphicFactory = new AisGraphicFactory(m_map.spatialReference(), this);
@@ -189,6 +197,8 @@ void GeosecureAisViewer::mapReady()
 
     // Connect to the serialization signals
     connect(_graphicSerializer, SIGNAL(graphicsSerialized(QString)), this, SLOT(graphicsExported(QString)));
+
+    _statusView->setStatusMessage(tr("Reading AIS data.."));
 }
 
 
@@ -255,6 +265,8 @@ void GeosecureAisViewer::addAisMessages(QList<AisMessage> *aisMessages)
 {
     // Create AIS messages as graphics
     _aisGraphicFactory->createGraphicsAsync(aisMessages);
+
+    _statusView->setStatusMessage(tr("Creating AIS graphics.."));
 }
 
 void GeosecureAisViewer::addAisGraphics(QList<EsriRuntimeQt::Graphic> *aisGraphics)
@@ -266,9 +278,13 @@ void GeosecureAisViewer::addAisGraphics(QList<EsriRuntimeQt::Graphic> *aisGraphi
 
     // Export the graphics
     _graphicSerializer->serializeGraphicsAsync(aisGraphics, "AIS.json");
+
+    _statusView->setStatusMessage(tr("Exporting AIS graphics.."));
 }
 
 void GeosecureAisViewer::graphicsExported(QString filePath)
 {
     qDebug() << "Graphics were exported to" << filePath;
+
+    _statusView->showDefaultStatusMessage();
 }

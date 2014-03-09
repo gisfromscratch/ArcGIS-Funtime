@@ -4,7 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += gui
+QT       += core gui
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets
+}
 
 TARGET = GeosecureCommons
 TEMPLATE = lib
@@ -18,7 +22,9 @@ SOURCES += GeosecureCommons.cpp \
     EsriProjectionEngine.cpp \
     SimpleProjectionEngine.cpp \
     GraphicSerializer.cpp \
-    TimeLayer.cpp
+    TimeLayer.cpp \
+    StatusView.cpp \
+    MappingToolbar.cpp
 
 HEADERS += GeosecureCommons.h\
         geosecurecommons_global.h \
@@ -26,9 +32,13 @@ HEADERS += GeosecureCommons.h\
     EsriProjectionEngine.h \
     SimpleProjectionEngine.h \
     GraphicSerializer.h \
-    TimeLayer.h
+    TimeLayer.h \
+    StatusView.h \
+    MappingToolbar.h
 
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+RESOURCES +=

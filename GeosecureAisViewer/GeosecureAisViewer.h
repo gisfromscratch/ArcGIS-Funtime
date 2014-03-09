@@ -22,6 +22,8 @@ class MapGraphicsView;
 
 #include <AisReader.h>
 #include <GraphicSerializer.h>
+#include <MappingToolbar.h>
+#include <StatusView.h>
 
 //Uncommented layer(s) needed
 #include <ArcGISLocalTiledLayer.h>
@@ -72,6 +74,9 @@ private:
     AisReader *_aisReader;
     AisGraphicFactory *_aisGraphicFactory;
     GraphicSerializer *_graphicSerializer;
+
+    MappingToolbar *_mappingToolbar;
+    StatusView *_statusView;
 };
 
 #endif // GEOSECUREAISVIEWER_H
