@@ -1,2 +1,9 @@
 /Debug
 /Release
+/GeodatabaseConsole/bin
+/GeodatabaseConsole/Debug
+/GeodatabaseConsole/Debug64
+/GeodatabaseConsole/ipch
+/GeodatabaseConsole/x64
+/GeodatabaseConsole/GeodatabaseConsole.sdf
+/GeodatabaseConsole/data
