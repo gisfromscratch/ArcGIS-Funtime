@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeodatabaseConsole", "GeodatabaseConsole\GeodatabaseConsole.vcxproj", "{887500D0-F9CA-47E7-A0AA-80E5B8F1F723}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeosecureGeodatabaseCommons", "GeosecureGeodatabaseCommons\GeosecureGeodatabaseCommons.vcxproj", "{F9D756EF-DECB-434E-BB1D-F70FE86F94F5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug64|Win32 = Debug64|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{887500D0-F9CA-47E7-A0AA-80E5B8F1F723}.Debug|Win32.ActiveCfg = Debug|Win32
+		{887500D0-F9CA-47E7-A0AA-80E5B8F1F723}.Debug|Win32.Build.0 = Debug|Win32
+		{887500D0-F9CA-47E7-A0AA-80E5B8F1F723}.Debug64|Win32.ActiveCfg = Debug64|x64
+		{887500D0-F9CA-47E7-A0AA-80E5B8F1F723}.Debug64|Win32.Build.0 = Debug64|x64
+		{887500D0-F9CA-47E7-A0AA-80E5B8F1F723}.Release|Win32.ActiveCfg = Release|Win32
+		{887500D0-F9CA-47E7-A0AA-80E5B8F1F723}.Release|Win32.Build.0 = Release|Win32
+		{F9D756EF-DECB-434E-BB1D-F70FE86F94F5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F9D756EF-DECB-434E-BB1D-F70FE86F94F5}.Debug|Win32.Build.0 = Debug|Win32
+		{F9D756EF-DECB-434E-BB1D-F70FE86F94F5}.Debug64|Win32.ActiveCfg = Debug64|x64
+		{F9D756EF-DECB-434E-BB1D-F70FE86F94F5}.Debug64|Win32.Build.0 = Debug64|x64
+		{F9D756EF-DECB-434E-BB1D-F70FE86F94F5}.Release|Win32.ActiveCfg = Release|Win32
+		{F9D756EF-DECB-434E-BB1D-F70FE86F94F5}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
