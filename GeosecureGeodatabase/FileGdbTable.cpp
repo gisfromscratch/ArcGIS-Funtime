@@ -10,6 +10,7 @@
 #include <QDebug>
 
 FileGdbTable::FileGdbTable(const QString &name, FileGDBAPI::Geodatabase *geodatabase, QObject *parent) :
+    _tableName(name),
     _geodatabase(geodatabase),
     _table(std::unique_ptr<FileGDBAPI::Table>(new FileGDBAPI::Table)),
     QObject(parent)
@@ -32,14 +33,6 @@ void FileGdbTable::insertGraphics(const QList<EsriRuntimeQt::Graphic> &graphics)
     qDebug() << "Inserting" << graphics.size() << "features";
 
     Row row;
-
-    EnumRows rows;
-    _table->Search(L"OBJECTID", L"1=1", true, rows);
-    while (S_OK == rows.Next(row))
-    {
-        _table->Delete(row);
-    }
-
     _table->LoadOnlyMode(true);
     _table->SetWriteLock();
     _table->CreateRowObject(row);
@@ -66,4 +59,14 @@ void FileGdbTable::insertGraphics(const QList<EsriRuntimeQt::Graphic> &graphics)
     _table->FreeWriteLock();
 
     qDebug() << graphics.size() << "features inserted";
+}
+
+void FileGdbTable::deleteAll()
+{
+    using namespace FileGDBAPI;
+
+    QString sqlCommand = QString("DELETE * FROM %1").arg(_tableName);
+    EnumRows rows;
+    qDebug() << "Executing SQL:" << sqlCommand;
+    _geodatabase->ExecuteSQL(sqlCommand.toStdWString(), true, rows);
 }

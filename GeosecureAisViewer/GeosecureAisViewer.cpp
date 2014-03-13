@@ -278,12 +278,12 @@ void GeosecureAisViewer::addAisGraphics(QList<EsriRuntimeQt::Graphic> *aisGraphi
     _aisLayer.addGraphics(*aisGraphics);
 
     // Export the graphics
-    _graphicSerializer->serializeGraphicsAsync(aisGraphics, "AIS.json");
-    qDebug() << "Features";
     FileGdbWorkspace *workspace = _workspaceFactory->openWorkspace("C:/Projects/Developer Summit 2014/Release/AIS.gdb");
     FileGdbTable *table = workspace->openTable("Vessels");
+    table->deleteAll();
     //table->insertGraphics(*aisGraphics);
 
+    _graphicSerializer->serializeGraphicsAsync(aisGraphics, "AIS.json");
     _statusView->setStatusMessage(tr("Exporting AIS graphics.."));
 }
 

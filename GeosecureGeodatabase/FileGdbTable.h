@@ -26,6 +26,11 @@ public:
      */
     void insertGraphics(const QList<EsriRuntimeQt::Graphic> &graphics);
 
+    /*!
+     * \brief deleteAll Deletes all row entries.
+     */
+    void deleteAll();
+
 signals:
 
 public slots:
@@ -33,6 +38,7 @@ public slots:
 private:
     FileGDBAPI::Geodatabase *_geodatabase;
     std::unique_ptr<FileGDBAPI::Table> _table;
+    const QString _tableName;
 };
 
 #endif // FILEGDBTABLE_H
