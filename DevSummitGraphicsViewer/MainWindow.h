@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "GraphicsFileReader.h"
+#include "TimeLayer.h"
 
 #include <ArcGISLocalTiledLayer.h>
 #include <Graphic.h>
@@ -11,6 +12,8 @@
 
 #include <QList>
 #include <QMainWindow>
+#include <QMap>
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
@@ -29,6 +32,9 @@ private slots:
     void dropEvent(QDropEvent *event);
 
     void readGraphicsCompleted(QList<EsriRuntimeQt::Graphic> *graphics);
+    void updateTimeExtent();
+
+    void mousePressed(QMouseEvent evt);
 
 private:
     Ui::MainWindow *ui;
@@ -38,6 +44,12 @@ private:
     EsriRuntimeQt::ArcGISLocalTiledLayer _basemapLayer;
 
     GraphicsFileReader *_graphicsFileReader;
+    QMap<EsriRuntimeQt::GraphicsLayer*, TimeLayer*> _timeLayers;
+
+    QAction *_activateSelectionAction;
+
+    EsriRuntimeQt::TimeExtent _currentTimeExtent;
+    QTimer _animationTimer;
 };
 
 #endif // MAINWINDOW_H

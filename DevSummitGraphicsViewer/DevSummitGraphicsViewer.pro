@@ -15,9 +15,16 @@ CONFIG += c++11 esri_runtime_qt_10_2
 
 SOURCES += main.cpp\
         MainWindow.cpp \
-    GraphicsFileReader.cpp
+    GraphicsFileReader.cpp \
+    TimeLayer.cpp \
+    TimeFieldInfo.cpp
 
 HEADERS  += MainWindow.h \
-    GraphicsFileReader.h
+    GraphicsFileReader.h \
+    TimeLayer.h \
+    TimeFieldInfo.h
 
 FORMS    += MainWindow.ui
+
+RESOURCES += \
+    Icons.qrc

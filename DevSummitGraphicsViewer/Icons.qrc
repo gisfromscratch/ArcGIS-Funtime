@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/toolbar">
+        <file>Icons/edit-select.png</file>
+    </qresource>
+    <qresource prefix="/symbol">
+        <file>Icons/ship.png</file>
+    </qresource>
+</RCC>
