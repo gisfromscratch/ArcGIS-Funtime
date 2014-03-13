@@ -19,6 +19,7 @@ class MapGraphicsView;
 }
 
 #include "AisGraphicFactory.h"
+#include <FileGdbWorkspaceFactory.h>
 
 #include <AisReader.h>
 #include <GraphicSerializer.h>
@@ -77,6 +78,8 @@ private:
 
     MappingToolbar *_mappingToolbar;
     StatusView *_statusView;
+
+    FileGdbWorkspaceFactory *_workspaceFactory;
 };
 
 #endif // GEOSECUREAISVIEWER_H

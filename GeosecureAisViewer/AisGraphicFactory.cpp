@@ -19,6 +19,7 @@ AisGraphicFactory::AisGraphicFactory(const EsriRuntimeQt::SpatialReference &spat
     if (AttributeNames.isEmpty())
     {
         AttributeNames[MMSIAttributeIndex] = "MMSI";
+        AttributeNames[TimestampAttributeIndex] = "TIMESTAMP";
 
         // QPixmap needs constructed QGuiApplication!
         ShipMarkerSymbol.setImage(QPixmap(":/symbols/Icons/symbols/ship.png").toImage());
@@ -47,6 +48,8 @@ EsriRuntimeQt::Graphic AisGraphicFactory::createGraphic(const AisMessage &aisMes
     // AIS attributes
     QVariantMap attributes;
     attributes[AttributeNames[MMSIAttributeIndex]] = QVariant(aisMessage.mmsi());
+    const QString DateTimeFormat = "yyyy-MM-dd hh:mm:ss";
+    attributes[AttributeNames[TimestampAttributeIndex]] = aisMessage.timestamp().toString(DateTimeFormat);
 
     auto shipMarkerSymbol = EsriRuntimeQt::PictureMarkerSymbol(ShipMarkerSymbol);
     shipMarkerSymbol.setAngle(aisMessage.rotation());

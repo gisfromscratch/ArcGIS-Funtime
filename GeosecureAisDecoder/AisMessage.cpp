@@ -2,7 +2,8 @@
 
 AisMessage::AisMessage(const int mmsi, const EsriRuntimeQt::Point &location) :
     _mmsi(mmsi),
-    _location(location)
+    _location(location),
+    _rotation(0.0f)
 {
 }
 
@@ -24,4 +25,14 @@ float AisMessage::rotation() const
 void AisMessage::setRotation(float rotation)
 {
     _rotation = rotation;
+}
+
+QDateTime AisMessage::timestamp() const
+{
+    return _timestamp;
+}
+
+void AisMessage::setTimestamp(const QDateTime &timestamp)
+{
+    _timestamp = timestamp;
 }

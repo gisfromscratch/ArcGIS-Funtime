@@ -65,7 +65,7 @@ private:
 
     enum SymbolSize { DefaultSymbolSize = 5 };
 
-    enum AttributeIndex { MMSIAttributeIndex = 0 };
+    enum AttributeIndex { MMSIAttributeIndex = 0, TimestampAttributeIndex = 1 };
     static QMap<AttributeIndex, QString> AttributeNames;
 
     ProjectionEngine *_projectionEngine;

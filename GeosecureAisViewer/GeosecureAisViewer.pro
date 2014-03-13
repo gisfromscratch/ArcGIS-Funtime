@@ -36,12 +36,12 @@ HEADERS += \
     AisGraphicFactory.h
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Release/release/ -lGeosecureAisDecoder -lGeosecureCommons
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Debug/debug/ -lGeosecureAisDecoder -lGeosecureCommons
-else:unix: LIBS += -L$$PWD/../Debug/ -lGeosecureAisDecoder -lGeosecureCommons
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Release/release/ -lGeosecureAisDecoder -lGeosecureCommons -lGeosecureGeodatabase -L$$PWD/../FileGDBAPI/ -lFileGDBAPI
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Debug/debug/ -lGeosecureAisDecoder -lGeosecureCommons -lGeosecureGeodatabase -L$$PWD/../FileGDBAPI/ -lFileGDBAPID
+else:unix: LIBS += -L$$PWD/../Debug/ -lGeosecureAisDecoder -lGeosecureCommons -lGeosecureGeodatabase -L$$PWD/../FileGDBAPI/ -lFileGDBAPI
 
-INCLUDEPATH += $$PWD/../GeosecureAisDecoder $$PWD/../GeosecureCommons
-DEPENDPATH += $$PWD/../GeosecureAisDecoder $$PWD/../GeosecureCommons
+INCLUDEPATH += $$PWD/../GeosecureAisDecoder $$PWD/../GeosecureCommons $$PWD/../GeosecureGeodatabase $$PWD/../FileGDBAPI
+DEPENDPATH += $$PWD/../GeosecureAisDecoder $$PWD/../GeosecureCommons $$PWD/../GeosecureGeodatabase $$PWD/../FileGDBAPI
 
 RESOURCES += \
     Icons.qrc

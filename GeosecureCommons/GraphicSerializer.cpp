@@ -41,7 +41,7 @@ void GraphicSerializer::serializeGraphics(QList<EsriRuntimeQt::Graphic> *graphic
             {
                 break;
             }
-            textStream << graphic.toJson();
+            textStream << graphic.toJson() << endl;
         }
         jsonFile.close();
     }

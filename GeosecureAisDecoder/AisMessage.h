@@ -5,6 +5,8 @@
 
 #include <Point.h>
 
+#include <QDateTime>
+
 /*!
  * \brief Simple Ais message with location.
  */
@@ -37,10 +39,23 @@ public:
      */
     void setRotation(float rotation);
 
+    /*!
+     * \brief timestamp The UTC timestamp of the AIS message.
+     * \return          UTC timestamp
+     */
+    QDateTime timestamp() const;
+
+    /*!
+     * \brief setTimestamp  Sets the UTC timestamp.
+     * \param timestamp     The UTC timestamp
+     */
+    void setTimestamp(const QDateTime &timestamp);
+
 private:
     const int _mmsi;
     const EsriRuntimeQt::Point _location;
     float _rotation;
+    QDateTime _timestamp;
 };
 
 #endif // AISMESSAGE_H

@@ -28,6 +28,7 @@ GeosecureAisViewer::GeosecureAisViewer(QWidget *parent) :
     QMainWindow(parent),
     _aisReader(new AisReader(this)),
     _aisGraphicFactory(nullptr),
+    _workspaceFactory(new FileGdbWorkspaceFactory),
     _graphicSerializer(new GraphicSerializer(this)),
     _mappingToolbar(new MappingToolbar(&m_map, this)),
     _statusView(new StatusView(this))
@@ -278,6 +279,10 @@ void GeosecureAisViewer::addAisGraphics(QList<EsriRuntimeQt::Graphic> *aisGraphi
 
     // Export the graphics
     _graphicSerializer->serializeGraphicsAsync(aisGraphics, "AIS.json");
+    qDebug() << "Features";
+    FileGdbWorkspace *workspace = _workspaceFactory->openWorkspace("C:/Projects/Developer Summit 2014/Release/AIS.gdb");
+    FileGdbTable *table = workspace->openTable("Vessels");
+    //table->insertGraphics(*aisGraphics);
 
     _statusView->setStatusMessage(tr("Exporting AIS graphics.."));
 }

@@ -1,5 +1,7 @@
 #include "GeosecureAisDecoder.h"
 
+#include <QDateTime>
+#include <QDebug>
 #include <QThread>
 
 GeosecureAisDecoder::GeosecureAisDecoder(QObject *parent) :
@@ -16,5 +18,9 @@ AisMessage GeosecureAisDecoder::createAisMessage(const char *nmea_payload, const
     EsriRuntimeQt::Point location(simpleAisMessage.x, simpleAisMessage.y);
     auto aisMessage = AisMessage(mmsi, location);
     aisMessage.setRotation(simpleAisMessage.rot);
+    // TODO: Just a test
+    QDateTime timestamp = QDateTime::currentDateTime();
+    timestamp = timestamp.addSecs(simpleAisMessage.timestamp);
+    aisMessage.setTimestamp(timestamp);
     return aisMessage;
 }

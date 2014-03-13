@@ -45,14 +45,12 @@ void MappingToolbar::selectGraphics(QMouseEvent mouseEvent)
     const int PixelTolerance = 5;
     const int MaximumGraphicsCount = 10;
 
-    qDebug() << "Selecting graphics";
     QPoint screenLocation = mouseEvent.pos();
     foreach (EsriRuntimeQt::GraphicsLayer layer, _selectableLayers)
     {
         auto graphicIds = layer.graphicIDs(screenLocation.x(), screenLocation.y(), PixelTolerance, MaximumGraphicsCount);
         layer.setSelectionIDs(graphicIds, false);
     }
-    qDebug() << "Selection updated";
 }
 
 void MappingToolbar::updateToolSlots(QAction *action)
