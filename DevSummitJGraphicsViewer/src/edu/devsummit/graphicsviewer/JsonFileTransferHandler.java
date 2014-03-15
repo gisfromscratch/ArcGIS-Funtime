@@ -1,15 +1,17 @@
 package edu.devsummit.graphicsviewer;
 
-import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
@@ -24,6 +26,8 @@ import com.esri.map.GraphicsLayer.RenderingMode;
 import com.esri.map.JMap;
 
 import edu.devsummit.graphicsviewer.io.GraphicsFileReader;
+import edu.devsummit.graphicsviewer.io.ReadCompletedEvent;
+import edu.devsummit.graphicsviewer.io.ReaderListener;
 
 public class JsonFileTransferHandler extends TransferHandler {
 	
@@ -31,17 +35,26 @@ public class JsonFileTransferHandler extends TransferHandler {
 	
 	private final JMap map;
 	private final GraphicsFileReader graphicsFileReader;
+	private final Set<ReaderListener> listeners;
 
 	public JsonFileTransferHandler(JMap map) {
 		this.map = map;
 		graphicsFileReader = new GraphicsFileReader();
+		listeners = new HashSet<>();
 	}
-
 
 	/**
 	 * Version ID
 	 */
 	private static final long serialVersionUID = -1080494492463303229L;
+	
+	public void addListener(ReaderListener listener) {
+		listeners.add(listener);
+	}
+	
+	public void removeListener(ReaderListener listener) {
+		listeners.remove(listener);
+	}
 
 	@Override
 	public boolean canImport(TransferSupport support) {
@@ -80,6 +93,9 @@ public class JsonFileTransferHandler extends TransferHandler {
 							map.getLayers().add(graphicsLayer);
 							
 							graphicsLayer.addGraphics(graphics.toArray(new Graphic[graphics.size()]));
+							for (ReaderListener listener : new HashSet<>(listeners)) {
+								listener.readCompleted(new ReadCompletedEvent(this, graphicsLayer));
+							}
 						} catch (IOException e) {
 							logger.severe(e.getMessage());
 						}
