@@ -104,18 +104,20 @@ public class JMainWindow {
 		
 		map.addMouseListener(new MouseAdapter() {
 			
+			private final int[] emptyIdList = new int[0];
+			private final int PixelTolerance = 5;
+			
 			@Override
 			public void mousePressed(MouseEvent evt) {
 				if (activateSelectionItem.isSelected()) {
 					if (MouseEvent.BUTTON3 == evt.getButton()) {
-						// TODO: Unselect all graphics
+						// Unselect all graphics
 						for (GraphicsLayer layer : timeLayers) {
-							layer.setSelectionIDs(new int[0], false);
+							layer.setSelectionIDs(emptyIdList, false);
 						}
 						return;
 					}
 					
-					int PixelTolerance = 5;
 					for (GraphicsLayer layer : timeLayers) {
 						int graphicsIds[] = layer.getGraphicIDs(evt.getX(), evt.getY(), PixelTolerance);
 						for (int graphicId : graphicsIds) {

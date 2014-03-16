@@ -3,12 +3,9 @@ package edu.devsummit.graphicsviewer;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +26,10 @@ import edu.devsummit.graphicsviewer.io.GraphicsFileReader;
 import edu.devsummit.graphicsviewer.io.ReadCompletedEvent;
 import edu.devsummit.graphicsviewer.io.ReaderListener;
 
+/**
+ * Enables drop support for JSON files containing graphics instances linewise.
+ * The graphics are added into a graphics layer and {@link ReaderListener#readCompleted(ReadCompletedEvent)} is called.
+ */
 public class JsonFileTransferHandler extends TransferHandler {
 	
 	private final Logger logger = Logger.getLogger(getClass().getName());
@@ -93,6 +94,8 @@ public class JsonFileTransferHandler extends TransferHandler {
 							map.getLayers().add(graphicsLayer);
 							
 							graphicsLayer.addGraphics(graphics.toArray(new Graphic[graphics.size()]));
+							
+							// Inform the listener
 							for (ReaderListener listener : new HashSet<>(listeners)) {
 								listener.readCompleted(new ReadCompletedEvent(this, graphicsLayer));
 							}

@@ -25,6 +25,9 @@ import com.esri.core.geometry.Point;
 import com.esri.core.map.CallbackListener;
 import com.esri.core.map.Graphic;
 
+/**
+ * Reads graphics asynchronously from a JSON file.
+ */
 public class GraphicsFileReader {
 
 	private final Logger logger = Logger.getLogger(getClass().getName());
@@ -39,11 +42,19 @@ public class GraphicsFileReader {
 		jsonFactory = new JsonFactory();
 		jsonMapper = new ObjectMapper(jsonFactory);
 	}
-
+	
+	/**
+	 * Cancels all current read operations.
+	 */
 	public void cancel() {
 		cancel.set(true);
 	}
 
+	/**
+	 * Reads graphics asynchronously from a JSON file.
+	 * @param filePath	The path to the JSON file.
+	 * @param callback	The callback which gets called from the UI thread after the read operation is completed.
+	 */
 	public void readGraphicsAsync(final String filePath, final CallbackListener<List<Graphic>> callback) {
 		executorService.execute(new Runnable() {
 
