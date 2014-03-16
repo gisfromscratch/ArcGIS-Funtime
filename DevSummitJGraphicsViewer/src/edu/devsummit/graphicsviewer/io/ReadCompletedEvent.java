@@ -1,27 +1,28 @@
 package edu.devsummit.graphicsviewer.io;
 
 import java.util.EventObject;
+import java.util.List;
 
-import com.esri.map.GraphicsLayer;
+import com.esri.core.map.Graphic;
 
 /**
- * Read completed event with a reference to a graphics layer.
+ * Read completed event with a reference to a list of graphics.
  */
 public class ReadCompletedEvent extends EventObject {
 
 	private static final long serialVersionUID = 5073068860345014333L;
 	
-	private final GraphicsLayer graphicsLayer;
+	private final List<Graphic> graphics;
 	
-	public ReadCompletedEvent(Object sender, GraphicsLayer graphicsLayer) {
+	public ReadCompletedEvent(Object sender, List<Graphic> graphics) {
 		super(sender);
-		this.graphicsLayer = graphicsLayer;
+		this.graphics = graphics;
 	}
 
 	/**
-	 * The graphics layer were the graphics were added.
+	 * The graphics that could be read.
 	 */
-	public GraphicsLayer getGraphicsLayer() {
-		return graphicsLayer;
+	public List<Graphic> getGraphics() {
+		return graphics;
 	}
 }

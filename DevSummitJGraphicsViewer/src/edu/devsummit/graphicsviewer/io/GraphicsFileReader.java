@@ -108,6 +108,7 @@ public class GraphicsFileReader {
 				lineReader.close();
 			}
 
+			// Invoke the callback on the UI thread
 			SwingUtilities.invokeLater(new Runnable() {
 
 				@Override
