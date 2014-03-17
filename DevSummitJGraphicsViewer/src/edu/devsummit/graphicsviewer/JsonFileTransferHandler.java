@@ -20,8 +20,8 @@ import edu.devsummit.graphicsviewer.io.ReadCompletedEvent;
 import edu.devsummit.graphicsviewer.io.ReaderListener;
 
 /**
- * Enables drop support for JSON files containing graphics instances linewise.
- * The graphics are added into a graphics layer and {@link ReaderListener#readCompleted(ReadCompletedEvent)} is called.
+ * Enables drop support for JSON files containing graphics instances on each line.
+ * The graphics are added into a {@link List} and {@link ReaderListener#readCompleted(ReadCompletedEvent)} is called.
  */
 public class JsonFileTransferHandler extends TransferHandler {
 	

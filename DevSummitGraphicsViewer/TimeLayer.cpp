@@ -54,7 +54,7 @@ EsriRuntimeQt::TimeExtent TimeLayer::queryTimeExtent()
                     timeExtent.setStartDate(startDate);
                 }
 
-                // Setzen des Endes des Zeitintervalls
+                // Use start time field as end time field
                 if (endTimeField.isEmpty())
                 {
                     if (invalidDate == timeExtent.endDate() || timeExtent.endDate() < startDate)

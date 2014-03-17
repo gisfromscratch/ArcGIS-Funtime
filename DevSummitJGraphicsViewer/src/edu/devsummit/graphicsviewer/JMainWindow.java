@@ -12,8 +12,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
@@ -26,6 +29,8 @@ import javax.swing.Timer;
 
 import com.esri.client.local.ArcGISLocalTiledLayer;
 import com.esri.core.map.Graphic;
+import com.esri.core.map.TimeExtent;
+import com.esri.core.map.TimeInfo;
 import com.esri.core.renderer.SimpleRenderer;
 import com.esri.core.symbol.PictureMarkerSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
@@ -36,6 +41,9 @@ import com.esri.map.GraphicsLayer.MarkerRotationMode;
 import com.esri.map.JMap;
 import com.esri.map.GraphicsLayer.RenderingMode;
 
+import edu.devsummit.graphicsviewer.carto.SimpleTimeFieldInfo;
+import edu.devsummit.graphicsviewer.carto.TimeFieldInfo;
+import edu.devsummit.graphicsviewer.carto.TimeLayer;
 import edu.devsummit.graphicsviewer.io.ReadCompletedEvent;
 import edu.devsummit.graphicsviewer.io.ReaderListener;
 
@@ -50,8 +58,11 @@ public class JMainWindow {
 	private final JsonFileTransferHandler fileTransferHandler;
 	private final Timer animationTimer;
 	
-	private final List<GraphicsLayer> timeLayers;
+	private final Map<GraphicsLayer, TimeLayer> timeLayers;
 	
+	private TimeExtent currentTimeExtent;
+	
+	private final int TIMESPAN_INCREMENT_SECONDS = 2;
 	private final int UPDATE_TIMEINTERVAL_SECONDS = 5;
 
 	public JMainWindow() {
@@ -86,13 +97,17 @@ public class JMainWindow {
 		map.getLayers().add(basemapLayer);
 		
 		logger = Logger.getLogger(getClass().getName());
-		timeLayers = new ArrayList<>();
+		timeLayers = new HashMap<>();
+		
+		// Animation timer for time restriction
 		animationTimer = new Timer(UPDATE_TIMEINTERVAL_SECONDS * 1000, new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO: Update the time extent of the layers
-				System.out.println("Updating time extent..");
+			public void actionPerformed(ActionEvent evt) {
+				for (TimeLayer timeLayer : timeLayers.values()) {
+					TimeExtent validTimeExtent = timeLayer.getTimeExtent();
+					
+				}
 			}
 		});
 		
@@ -116,14 +131,23 @@ public class JMainWindow {
 				
 				// Create the graphics layer with a renderer
 				SimpleRenderer simpleRenderer = new SimpleRenderer(graphicSymbol);
-				GraphicsLayer timeLayer = new GraphicsLayer(RenderingMode.DYNAMIC);
-				timeLayer.setRenderer(simpleRenderer);
-				map.getLayers().add(timeLayer);
+				GraphicsLayer graphicsLayer = new GraphicsLayer(RenderingMode.DYNAMIC);
+				graphicsLayer.setRenderer(simpleRenderer);
+				map.getLayers().add(graphicsLayer);
 				
 				// Add the graphics
 				List<Graphic> graphics = evt.getGraphics();
-				timeLayer.addGraphics(graphics.toArray(new Graphic[graphics.size()]));
-				timeLayers.add(timeLayer);
+				graphicsLayer.addGraphics(graphics.toArray(new Graphic[graphics.size()]));
+				
+				TimeFieldInfo timeFieldInfo = new SimpleTimeFieldInfo("TIMESTAMP", "");
+				TimeLayer timeLayer = new TimeLayer(graphicsLayer, timeFieldInfo, "yyyy-MM-dd hh:mm:ss");
+				timeLayers.put(graphicsLayer, timeLayer);
+				
+				logger.fine("Query time extent");
+				currentTimeExtent = timeLayer.getTimeExtent();
+				currentTimeExtent.getEndDate().add(Calendar.SECOND, TIMESPAN_INCREMENT_SECONDS);
+				
+				logger.fine(String.format("%s - %s", currentTimeExtent.getStartDate(), currentTimeExtent.getEndDate()));
 				
 				// Start the time animation
 				if (!animationTimer.isRunning()) {
@@ -152,13 +176,13 @@ public class JMainWindow {
 				if (activateSelectionItem.isSelected()) {
 					if (MouseEvent.BUTTON3 == evt.getButton()) {
 						// Unselect all graphics
-						for (GraphicsLayer layer : timeLayers) {
+						for (GraphicsLayer layer : timeLayers.keySet()) {
 							layer.setSelectionIDs(emptyIdList, false);
 						}
 						return;
 					}
 					
-					for (GraphicsLayer layer : timeLayers) {
+					for (GraphicsLayer layer : timeLayers.keySet()) {
 						int graphicsIds[] = layer.getGraphicIDs(evt.getX(), evt.getY(), PixelTolerance);
 						for (int graphicId : graphicsIds) {
 							if (layer.isGraphicSelected(graphicId)) {

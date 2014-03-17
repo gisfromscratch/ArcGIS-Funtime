@@ -14,10 +14,10 @@ public:
     virtual QString endTimeField() = 0;
 };
 
-class SimpleTimeInfo : public TimeFieldInfo {
+class SimpleTimeFieldInfo : public TimeFieldInfo {
     Q_OBJECT
 public:
-    SimpleTimeInfo(const QString &startTimeField, const QString &endTimeField, QObject *parent = 0) :
+    SimpleTimeFieldInfo(const QString &startTimeField, const QString &endTimeField, QObject *parent = 0) :
         TimeFieldInfo(parent),
         _startTimeField(startTimeField),
         _endTimeField(endTimeField)

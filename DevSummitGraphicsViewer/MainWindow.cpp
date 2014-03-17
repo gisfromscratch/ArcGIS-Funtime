@@ -149,7 +149,7 @@ void MainWindow::readGraphicsCompleted(QList<EsriRuntimeQt::Graphic> *graphics)
     graphicsLayer->addGraphics(*graphics);
     delete graphics;
 
-    auto timeInfo = new SimpleTimeInfo("TIMESTAMP", "", this);
+    auto timeInfo = new SimpleTimeFieldInfo("TIMESTAMP", "", this);
     auto timeLayer = new TimeLayer(graphicsLayer, timeInfo);
 
     qDebug() << "Query time extent";
