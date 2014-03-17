@@ -16,3 +16,8 @@
 /GeosecureCommons/*.user
 /GeosecureAisDecoder/GeosecureAisDecoder.pro.user
 /GeosecureAisViewer/GeosecureAisViewer.pro.user
+/DevSummitGeometryEngineConsole/*.user
+/GeosecureGeodatabase/*.user
+/DevSummitGraphicsViewer/*.user
+/GeodatabaseConsole/GeodatabaseConsole/*.user
+/GeodatabaseConsole/*.suo
