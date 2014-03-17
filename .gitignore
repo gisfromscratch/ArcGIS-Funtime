@@ -13,3 +13,6 @@
 /GeodatabaseConsole/GeodatabaseConsole/Debug64
 /GeodatabaseConsole/GeosecureGeodatabaseCommons/x64
 /GeodatabaseConsole/GeosecureGeodatabaseCommons/Debug
+/GeosecureCommons/*.user
+/GeosecureAisDecoder/GeosecureAisDecoder.pro.user
+/GeosecureAisViewer/GeosecureAisViewer.pro.user
