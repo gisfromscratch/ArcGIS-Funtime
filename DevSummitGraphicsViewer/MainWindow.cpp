@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
+#include "GraphicsCache.h"
 #include "TimeFieldInfo.h"
 
 #include <PictureMarkerSymbol.h>
@@ -93,6 +94,7 @@ void MainWindow::mousePressed(QMouseEvent evt)
             return;
         }
 
+        // Select graphics
         auto location = evt.pos();
         const int PixelTolerance = 5;
         foreach (EsriRuntimeQt::GraphicsLayer *layer, _timeLayers.keys())
@@ -128,6 +130,8 @@ void MainWindow::updateTimeExtent()
         if (!validTimeExtent.intersects(_currentTimeExtent))
         {
             _animationTimer.stop();
+
+            layer->setTimeInterval(validTimeExtent);
             return;
         }
 
@@ -137,18 +141,25 @@ void MainWindow::updateTimeExtent()
 
 void MainWindow::readGraphicsCompleted(QList<EsriRuntimeQt::Graphic> *graphics)
 {
+    // Create a new graphics layer
     auto graphicsLayer = new EsriRuntimeQt::GraphicsLayer(EsriRuntimeQt::RenderingMode::Dynamic);
 //    const int SymbolSize = 5;
 //    EsriRuntimeQt::SimpleMarkerSymbol markerSymbol(Qt::blue, SymbolSize, EsriRuntimeQt::SimpleMarkerSymbolStyle::Diamond);
     EsriRuntimeQt::PictureMarkerSymbol pictureSymbol(QPixmap(":/symbol/Icons/ship.png").toImage());
     auto renderer = EsriRuntimeQt::SimpleRenderer(pictureSymbol);
     graphicsLayer->setRenderer(renderer);
-    qDebug() << "Adding" << graphics->size() << "graphics";
 
+    // Add the graphics layer and the graphics
+    qDebug() << "Adding" << graphics->size() << "graphics";
     _map.addLayer(*graphicsLayer);
-    graphicsLayer->addGraphics(*graphics);
+    auto graphicIds = graphicsLayer->addGraphics(*graphics);
+
+    // Create a new graphics cache
+    auto graphicsCache = new GraphicsCache(this);
+    graphicsCache->insert(graphicIds, *graphics);
     delete graphics;
 
+    // Create a new time layer
     auto timeInfo = new SimpleTimeFieldInfo("TIMESTAMP", "", this);
     auto timeLayer = new TimeLayer(graphicsLayer, timeInfo);
 

@@ -7,7 +7,8 @@ TimeLayer::TimeLayer(EsriRuntimeQt::GraphicsLayer *graphicsLayer, TimeFieldInfo 
     m_graphicsLayer(graphicsLayer),
     m_timeInfo(timeInfo),
     m_dateTimeFormat(dateTimeFormat),
-    m_queriedTimeExtent(false)
+    m_queriedTimeExtent(false),
+    m_graphicsCache(nullptr)
 {
 }
 
@@ -108,7 +109,16 @@ void TimeLayer::setTimeInterval(EsriRuntimeQt::TimeExtent &timeInterval)
     QList<int> graphicIds = m_graphicsLayer->graphicIDs();
     foreach (int graphicId, graphicIds)
     {
-        EsriRuntimeQt::Graphic graphic = m_graphicsLayer->graphic(graphicId);
+        EsriRuntimeQt::Graphic graphic;
+        if (nullptr != m_graphicsCache)
+        {
+            graphic = m_graphicsCache->value(graphicId);
+        }
+        else
+        {
+            graphic = m_graphicsLayer->graphic(graphicId);
+        }
+
         bool grapicHasValidTime = true;
         if (!startTimeField.isEmpty())
         {
@@ -152,4 +162,14 @@ void TimeLayer::setTimeInterval(EsriRuntimeQt::TimeExtent &timeInterval)
     }
 
     emit visibilityUpdated();
+}
+
+GraphicsCache *TimeLayer::graphicsCache()
+{
+    return m_graphicsCache;
+}
+
+void TimeLayer::setGrapicsCache(GraphicsCache *graphicsCache)
+{
+    m_graphicsCache = graphicsCache;
 }

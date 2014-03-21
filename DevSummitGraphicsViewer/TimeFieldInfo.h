@@ -3,6 +3,9 @@
 
 #include <QObject>
 
+/*!
+ * \brief The start and end field names.
+ */
 class TimeFieldInfo : public QObject
 {
     Q_OBJECT

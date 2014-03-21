@@ -17,12 +17,14 @@ SOURCES += main.cpp\
         MainWindow.cpp \
     GraphicsFileReader.cpp \
     TimeLayer.cpp \
-    TimeFieldInfo.cpp
+    TimeFieldInfo.cpp \
+    GraphicsCache.cpp
 
 HEADERS  += MainWindow.h \
     GraphicsFileReader.h \
     TimeLayer.h \
-    TimeFieldInfo.h
+    TimeFieldInfo.h \
+    GraphicsCache.h
 
 FORMS    += MainWindow.ui
 
