@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/mainwindow">
+        <file>Icons/qemu.ico</file>
+    </qresource>
+</RCC>
