@@ -65,8 +65,8 @@ void FileGdbTable::deleteAll()
 {
     using namespace FileGDBAPI;
 
-    QString sqlCommand = QString("DELETE * FROM %1").arg(_tableName);
+    QString sqlCommand = QString("DELETE FROM %1").arg(_tableName);
     EnumRows rows;
     qDebug() << "Executing SQL:" << sqlCommand;
-    _geodatabase->ExecuteSQL(sqlCommand.toStdWString(), true, rows);
+    GeosecureGeodatabase::Try(_geodatabase->ExecuteSQL(sqlCommand.toStdWString(), true, rows));
 }
