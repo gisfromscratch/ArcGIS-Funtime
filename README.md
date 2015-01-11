@@ -20,4 +20,5 @@ Displays the toll control points from a shapefile for Germany.
 # Military symbology viewer using ArcGIS Runtime for Java
 JavaFX based application displaying all Mil2525C symbols from the symbol dictionary in a list view.
 The selected symbol of the list view will be displayed in a image view and the corresponding SIC code is displayed in a text area.
+
 ![alt text](https://raw.githubusercontent.com/gisfromscratch/ArcGIS-Funtime/master/Documentation/MilitarySymbologyViewer.png "Military Symbology Viewer")
