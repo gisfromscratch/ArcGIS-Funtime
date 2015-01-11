@@ -1,11 +1,9 @@
 package edu.militarysymbologyviewer;
 
-import com.esri.core.symbol.advanced.SymbolProperties;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
+
+import com.esri.core.symbol.advanced.SymbolProperties;
 
 /**
  * Updates an image view control when a symbol change event was raised.
@@ -15,19 +13,15 @@ import javafx.scene.image.WritableImage;
  */
 class SymbolChangeListener implements ChangeListener<SymbolProperties> {
 
-	private final ImageView imageView;
-	
-	private final int ImageWidth = 400;
-	
-	private final int ImageHeight = 400;
+	private final SymbolView symbolView;
 	
 	/**
 	 * Creates a new change listener instance.
 	 * 
-	 * @param imageView the image view displaying a symbol.
+	 * @param symbolView the symbol view displaying a symbol.
 	 */
-	SymbolChangeListener(ImageView imageView) {
-		this.imageView = imageView;
+	SymbolChangeListener(SymbolView symbolView) {
+		this.symbolView = symbolView;
 	}
 	
 	/**
@@ -40,13 +34,11 @@ class SymbolChangeListener implements ChangeListener<SymbolProperties> {
 	@Override
 	public void changed(ObservableValue<? extends SymbolProperties> observedItem, SymbolProperties oldItem, SymbolProperties newItem) {
 		if (null != newItem) {
-			SymbolCell symbolCell = new SymbolCell();
-			WritableImage nodeImage = symbolCell.renderSymbol(newItem, ImageWidth, ImageHeight);
-			imageView.setImage(nodeImage);
+			symbolView.updateSymbol(newItem);
 			return;
 		}
 				
-		imageView.setImage(null);
+		symbolView.updateSymbol(null);
 	}
 
 }

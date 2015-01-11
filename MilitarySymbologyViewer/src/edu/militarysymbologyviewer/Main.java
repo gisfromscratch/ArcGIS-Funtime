@@ -28,6 +28,8 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			primaryStage.setTitle("Military Symbology Viewer");
+			
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("MilitarySymbologyView.fxml"));
 			BorderPane root = (BorderPane) loader.load();
 			
@@ -45,9 +47,9 @@ public class Main extends Application {
 			controller.registerSelectionListener();
 			
 			// Displays the main stage in a scene
-			Scene scene = new Scene(root, 500, 500);
-			primaryStage.setMinHeight(500);
-			primaryStage.setMinWidth(500);
+			Scene scene = new Scene(root, 600, 600);
+			primaryStage.setMinHeight(600);
+			primaryStage.setMinWidth(600);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();

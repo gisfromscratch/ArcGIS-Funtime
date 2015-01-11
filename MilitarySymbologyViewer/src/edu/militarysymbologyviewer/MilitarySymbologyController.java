@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 
 /**
@@ -17,6 +18,9 @@ import javafx.scene.image.ImageView;
  *
  */
 public class MilitarySymbologyController {
+	
+	@FXML
+	private TextArea textArea;
 	
 	@FXML
 	private ImageView imageView;
@@ -47,8 +51,12 @@ public class MilitarySymbologyController {
 		if (null == imageView) {
 			throw new IllegalStateException("The image view was not instantiated!");
 		}
+		if (null == textArea) {
+			throw new IllegalStateException("The text area was not instantiated!");
+		}
 		
-		listView.getSelectionModel().selectedItemProperty().addListener(new SymbolChangeListener(imageView));
+		SymbolView symbolView = new SymbolView(imageView, textArea);
+		listView.getSelectionModel().selectedItemProperty().addListener(new SymbolChangeListener(symbolView));
 	}
 	
 	/**
