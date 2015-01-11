@@ -10,7 +10,7 @@ The following samples are provided:
 Displays AIS files using 3rd party AIS C-based library.
 
 # Graphics viewer implemented for Qt and Java
-Displays graphics obtained from text files containing graphics using the well knwon JSON format.
+Displays graphics obtained from text files containing graphics using the well known JSON format.
 Those text files can be dropped onto the application UI. The application parses thoses files and adds
 them as graphics to a graphics layer of the map.
 
