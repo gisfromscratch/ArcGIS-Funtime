@@ -14,7 +14,9 @@ public interface SicRenderer {
 	 * Generates a buffered image using the specified SIC.
 	 * 
 	 * @param sic the SIC code.
+	 * @param width the with of the generated image
+	 * @param height the height of the generated image
 	 * @return A buffered image.
 	 */
-	public BufferedImage render(String sic);
+	public BufferedImage render(String sic, int width, int height);
 }

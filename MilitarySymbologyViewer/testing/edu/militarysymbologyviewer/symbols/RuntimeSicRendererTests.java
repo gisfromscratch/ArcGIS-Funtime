@@ -23,12 +23,16 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class RuntimeSicRendererTests {
 		
-	private static RuntimeSicRenderer renderer;	
+	private static RuntimeSicRenderer renderer;
+	
+	private static final int Width = 200;
+	private static final int Height = 200;
 	
 	@Parameters
 	public static Collection<Object[]> data() {
 		return Arrays.asList(new Object[][] {
-				{ "SIC****" }
+				{ "SNGPEVCTL-" },
+				{ "GFOPFA----" }
 		});
 	}
 	
@@ -49,8 +53,10 @@ public class RuntimeSicRendererTests {
 	 */
 	@Test
 	public void renderSicCodes() {
-		BufferedImage symbol = renderer.render(sicCode);
+		BufferedImage symbol = renderer.render(sicCode, Width, Height);
 		assertNotNull("The generated symbol must not be null!", symbol);
+		
+		
 	}
 
 }

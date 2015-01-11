@@ -6,7 +6,19 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.fxml.FXMLLoader;
 
+/**
+ * Main application of the Military Symbology Viewer.
+ *
+ * @author J.T.
+ *
+ */
 public class Main extends Application {
+	
+	/**
+	 * Shows the main stage.
+	 * 
+	 * @param primaryStage the primary stage of the application.
+	 */
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -20,6 +32,11 @@ public class Main extends Application {
 		}
 	}
 
+	/**
+	 * Starts the main application.
+	 * 
+	 * @param args the application parameters.
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
