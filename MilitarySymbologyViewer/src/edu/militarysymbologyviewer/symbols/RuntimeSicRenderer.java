@@ -53,6 +53,14 @@ public class RuntimeSicRenderer implements SicRenderer {
 		}
 	}
 
+	/**
+	 * Renders the specified SIC code as a buffered image.
+	 * 
+	 * @param sic the SIC code which defines the symbol
+	 * @param width the width of the rendered image
+	 * @param height the height of the rendered image
+	 * @return A rendered image or null if the SIC code is unknown.
+	 */
 	@Override
 	public BufferedImage render(String sic, int width, int height) {
 		if (symbolProperties.containsKey(sic)) {
