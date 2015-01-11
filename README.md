@@ -5,8 +5,8 @@ The following samples are provided:
 * Toll runtime viewer using ArcGIS Runtime for Qt
 * Military symbology viewer using ArcGIS Runtime for Java
 
-# H1 AIS runtime viewer using ArcGIS Runtime for Qt
+# AIS runtime viewer using ArcGIS Runtime for Qt
 
-# H1 Toll runtime viewer using ArcGIS Runtime for Qt
+# Toll runtime viewer using ArcGIS Runtime for Qt
 
-# H1 Military symbology viewer using ArcGIS Runtime for Java
+# Military symbology viewer using ArcGIS Runtime for Java
