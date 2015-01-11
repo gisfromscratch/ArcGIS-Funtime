@@ -29,7 +29,11 @@ public class MilitarySymbologyController {
 	 * 
 	 * @param symbolProperties a list of symbols which should be shown
 	 */
-	public void updateSymbols(List<SymbolProperties> symbolProperties) {
+	void updateSymbols(List<SymbolProperties> symbolProperties) {
+		if (null == listView) {
+			throw new IllegalStateException("The list view was not instantiated!");
+		}
+		
 		ObservableList<SymbolProperties> listViewItems = FXCollections.observableList(symbolProperties);
 		listView.setItems(listViewItems);
 	}
