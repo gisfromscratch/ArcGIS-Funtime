@@ -31,10 +31,14 @@ public class Main extends Application {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("MilitarySymbologyView.fxml"));
 			BorderPane root = (BorderPane) loader.load();
 			
+			MilitarySymbologyController controller = loader.getController();
+			
+			// Initializes the cell factory
+			controller.initCellFactory();
+			
 			// Add all symbols from the dictionary
 			SymbolDictionary symbolDictionary = new SymbolDictionary(DictionaryType.Mil2525C);
 			List<SymbolProperties> symbolProperties = symbolDictionary.findSymbols();
-			MilitarySymbologyController controller = loader.getController();
 			controller.updateSymbols(symbolProperties);
 			
 			Scene scene = new Scene(root, 500, 500);

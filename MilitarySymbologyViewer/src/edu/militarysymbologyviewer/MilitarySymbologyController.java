@@ -25,6 +25,18 @@ public class MilitarySymbologyController {
 	private ListView<SymbolProperties> listView;
 	
 	/**
+	 * Initializes the cell factory for displaying symbols.
+	 */
+	void initCellFactory() {
+		if (null == listView) {
+			throw new IllegalStateException("The list view was not instantiated!");
+		}
+		
+		SymbolCellFactory cellFactory = new SymbolCellFactory();
+		listView.setCellFactory(cellFactory.createCallback());
+	}
+	
+	/**
 	 * Updates the symbols shown in the list view.
 	 * 
 	 * @param symbolProperties a list of symbols which should be shown
