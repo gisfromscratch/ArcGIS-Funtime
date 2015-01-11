@@ -15,12 +15,31 @@ import com.esri.core.symbol.advanced.SymbolProperties;
  * @author J.T.
  *
  */
-public class SymbolCell extends ListCell<SymbolProperties> {
+class SymbolCell extends ListCell<SymbolProperties> {
 
 	private final int ImageWidth = 100;
 	
 	private final int ImageHeight = 100;
 	
+	/**
+	 * Renders the symbol as image.
+	 * 
+	 * @param item the symbol which should be rendered
+	 * @param width the width of the rendered image
+	 * @param height the height of the rendered image
+	 * @return A new rendered image of the symbol.
+	 */
+	WritableImage renderSymbol(SymbolProperties item, int width, int height) {
+		BufferedImage symbolImage = item.getImage(width, height);
+		return SwingFXUtils.toFXImage(symbolImage, null);
+	}
+	
+	/**
+	 * Updates the cell item by displaying the specified symbol.
+	 * 
+	 * @param item the symbol item which should be displayed
+	 * @param empty a flag whether or not the item should be treat as empty
+	 */
 	@Override
 	protected void updateItem(SymbolProperties item, boolean empty) {
 		super.updateItem(item, empty);
@@ -30,8 +49,7 @@ public class SymbolCell extends ListCell<SymbolProperties> {
 		}
 		
 		// Renders the image
-		BufferedImage symbolImage = item.getImage(ImageWidth, ImageHeight);
-		WritableImage nodeImage = SwingFXUtils.toFXImage(symbolImage, null);
+		WritableImage nodeImage = renderSymbol(item, ImageWidth, ImageHeight);
 		ImageView symbolView = new ImageView(nodeImage);
 		setGraphic(symbolView);
 	}

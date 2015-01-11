@@ -37,6 +37,21 @@ public class MilitarySymbologyController {
 	}
 	
 	/**
+	 * Registers a selection listener for the list view.
+	 * When the selection changes the symbol of the image view is updated.
+	 */
+	void registerSelectionListener() {
+		if (null == listView) {
+			throw new IllegalStateException("The list view was not instantiated!");
+		}
+		if (null == imageView) {
+			throw new IllegalStateException("The image view was not instantiated!");
+		}
+		
+		listView.getSelectionModel().selectedItemProperty().addListener(new SymbolChangeListener(imageView));
+	}
+	
+	/**
 	 * Updates the symbols shown in the list view.
 	 * 
 	 * @param symbolProperties a list of symbols which should be shown

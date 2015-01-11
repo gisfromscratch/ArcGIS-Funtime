@@ -41,6 +41,10 @@ public class Main extends Application {
 			List<SymbolProperties> symbolProperties = symbolDictionary.findSymbols();
 			controller.updateSymbols(symbolProperties);
 			
+			// Register a selection listener
+			controller.registerSelectionListener();
+			
+			// Displays the main stage in a scene
 			Scene scene = new Scene(root, 500, 500);
 			primaryStage.setMinHeight(500);
 			primaryStage.setMinWidth(500);

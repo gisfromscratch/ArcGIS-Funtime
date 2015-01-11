@@ -14,7 +14,7 @@ import javafx.util.Callback;
  * @author J.T.
  *
  */
-public class SymbolCellFactory {
+class SymbolCellFactory {
 
 	/**
 	 * Creates a callback for the rendering of the cells.
