@@ -47,7 +47,7 @@ namespace Runtime.Powershell.Modules
                 if (0 == index % chunkSize)
                 {
                     WriteDebug(string.Format(@"'{0}' features inserted.", index));
-                    progressRecord.PercentComplete = index / NumberOfFeatures;
+                    progressRecord.PercentComplete = Math.Min(100, 100 * index / NumberOfFeatures);
                     WriteProgress(progressRecord);
                 }
             }
