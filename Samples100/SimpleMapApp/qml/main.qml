@@ -24,7 +24,7 @@ ApplicationWindow {
     // add a mapView component
     MapView {
         anchors.fill: parent
-        wrapAroundMode: Enums.WrapAroundModeDisabled
+        wrapAroundMode: Enums.WrapAroundModeEnabledWhenSupported
 
         // add a map to the mapview
         Map {
