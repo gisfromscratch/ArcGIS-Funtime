@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/qml">
         <file>main.qml</file>
+        <file>main.js</file>
+        <file>PortalConnection.js</file>
     </qresource>
 </RCC>

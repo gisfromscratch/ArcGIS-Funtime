@@ -14,6 +14,7 @@
 import QtQuick 2.6
 import QtQuick.Controls 1.4
 import Esri.ArcGISRuntime 100.0
+import "main.js" as Main
 
 ApplicationWindow {
     id: appWindow
@@ -29,7 +30,8 @@ ApplicationWindow {
         // add a map to the mapview
         Map {
             // add the BasemapTopographic basemap to the map
-            BasemapTopographic {}
+            BasemapTopographic {
+            }
         }
     }
 }
