@@ -21,3 +21,5 @@
 /DevSummitGraphicsViewer/*.user
 /GeodatabaseConsole/GeodatabaseConsole/*.user
 /GeodatabaseConsole/*.suo
+/Runtime.Powershell.Modules/Runtime.Powershell.Modules/bin
+/Runtime.Powershell.Modules/Runtime.Powershell.Modules/obj
